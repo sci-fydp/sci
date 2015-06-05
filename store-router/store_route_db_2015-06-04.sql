@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.25)
 # Database: store_route_db
-# Generation Time: 2015-06-02 17:21:40 +0000
+# Generation Time: 2015-06-05 03:55:19 +0000
 # ************************************************************
 
 
@@ -29,16 +29,10 @@ CREATE TABLE `address` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `address` varchar(255) DEFAULT NULL,
   `city_id` int(11) unsigned NOT NULL,
-  `postal_code` int(11) DEFAULT NULL,
+  `postal_code` varchar(11) DEFAULT NULL,
   `state_province_id` int(11) unsigned NOT NULL,
   `country_id` int(11) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `address_city` (`city_id`),
-  KEY `address_state_province` (`state_province_id`),
-  KEY `address_country` (`country_id`),
-  CONSTRAINT `address_city` FOREIGN KEY (`city_id`) REFERENCES `country` (`id`),
-  CONSTRAINT `address_country` FOREIGN KEY (`country_id`) REFERENCES `country` (`id`),
-  CONSTRAINT `address_state_province` FOREIGN KEY (`state_province_id`) REFERENCES `state_province` (`id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -76,7 +70,7 @@ DROP TABLE IF EXISTS `holiday`;
 
 CREATE TABLE `holiday` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` int(11) DEFAULT NULL,
+  `name` varchar(11) DEFAULT NULL,
   `month_of_year` int(11) DEFAULT NULL,
   `day_of_month` int(11) DEFAULT NULL,
   `day_of_week` int(11) DEFAULT NULL,
@@ -108,27 +102,24 @@ CREATE TABLE `item` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   `category_id` int(11) unsigned NOT NULL,
-  `creation_date` timestamp NULL DEFAULT NULL,
-  `modify_date` timestamp NULL DEFAULT NULL,
+  `creation_date` datetime DEFAULT NULL,
+  `modify_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `item_category` (`category_id`),
-  CONSTRAINT `item_category` FOREIGN KEY (`category_id`) REFERENCES `inventory_category` (`id`)
+  KEY `item_category` (`category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Dump of table location_closed_list
+# Dump of table location_holiday
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `location_closed_list`;
+DROP TABLE IF EXISTS `location_holiday`;
 
-CREATE TABLE `location_closed_list` (
+CREATE TABLE `location_holiday` (
   `location_id` int(11) unsigned NOT NULL,
   `holiday_id` int(11) unsigned NOT NULL,
   KEY `location` (`location_id`),
-  KEY `holiday` (`holiday_id`),
-  CONSTRAINT `holiday` FOREIGN KEY (`holiday_id`) REFERENCES `holiday` (`id`),
-  CONSTRAINT `location` FOREIGN KEY (`location_id`) REFERENCES `store_location` (`id`)
+  KEY `holiday` (`holiday_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -144,8 +135,7 @@ CREATE TABLE `location_item` (
   `price` float DEFAULT NULL,
   `stock_count` int(11) DEFAULT NULL,
   KEY `item` (`item_id`),
-  KEY `location` (`location_id`),
-  CONSTRAINT `item` FOREIGN KEY (`item_id`) REFERENCES `item` (`id`)
+  KEY `location` (`location_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -173,11 +163,10 @@ CREATE TABLE `store` (
   `name` varchar(255) NOT NULL DEFAULT '',
   `inventory_category_id` int(11) unsigned NOT NULL,
   `active` tinyint(1) DEFAULT NULL,
-  `creation_date` timestamp NULL DEFAULT NULL,
-  `modify_date` timestamp NULL DEFAULT NULL,
+  `creation_date` datetime DEFAULT NULL,
+  `modify_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `store_category` (`inventory_category_id`),
-  CONSTRAINT `store_category` FOREIGN KEY (`inventory_category_id`) REFERENCES `inventory_category` (`id`)
+  KEY `store_category` (`inventory_category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -191,27 +180,41 @@ CREATE TABLE `store_location` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `store_id` int(11) unsigned NOT NULL,
   `address_id` int(11) unsigned NOT NULL,
-  `sunday_begin_time` int(11) DEFAULT NULL,
-  `sunday_end_time` int(11) DEFAULT NULL,
-  `monday_begin_time` int(11) DEFAULT NULL,
-  `monday_end_time` int(11) DEFAULT NULL,
-  `tuesday_begin_time` int(11) DEFAULT NULL,
-  `tuesday_end_time` int(11) DEFAULT NULL,
-  `wednesday_begin_time` int(11) DEFAULT NULL,
-  `wednesday_end_time` int(11) DEFAULT NULL,
-  `thursday_begin_time` int(11) DEFAULT NULL,
-  `thursday_end_time` int(11) DEFAULT NULL,
-  `friday_begin_time` int(11) DEFAULT NULL,
-  `friday_end_time` int(11) DEFAULT NULL,
-  `saturday_begin_time` int(11) DEFAULT NULL,
-  `saturday_end_time` int(11) DEFAULT NULL,
-  `creation_date` timestamp NULL DEFAULT NULL,
-  `modify_date` timestamp NULL DEFAULT NULL,
+  `active` tinyint(1) DEFAULT NULL,
+  `sunday_begin_time` datetime DEFAULT NULL,
+  `sunday_end_time` datetime DEFAULT NULL,
+  `monday_begin_time` datetime DEFAULT NULL,
+  `monday_end_time` datetime DEFAULT NULL,
+  `tuesday_begin_time` datetime DEFAULT NULL,
+  `tuesday_end_time` datetime DEFAULT NULL,
+  `wednesday_begin_time` datetime DEFAULT NULL,
+  `wednesday_end_time` datetime DEFAULT NULL,
+  `thursday_begin_time` datetime DEFAULT NULL,
+  `thursday_end_time` datetime DEFAULT NULL,
+  `friday_begin_time` datetime DEFAULT NULL,
+  `friday_end_time` datetime DEFAULT NULL,
+  `saturday_begin_time` datetime DEFAULT NULL,
+  `saturday_end_time` datetime DEFAULT NULL,
+  `creation_date` datetime DEFAULT NULL,
+  `modify_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `store_location_store` (`store_id`),
-  KEY `store_location_address` (`address_id`),
-  CONSTRAINT `store_location_address` FOREIGN KEY (`address_id`) REFERENCES `address` (`id`),
-  CONSTRAINT `store_location_store` FOREIGN KEY (`store_id`) REFERENCES `store` (`id`)
+  KEY `store_location_address` (`address_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table store_location_distance
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `store_location_distance`;
+
+CREATE TABLE `store_location_distance` (
+  `store_location_a` int(11) unsigned NOT NULL,
+  `store_location_b` int(11) unsigned NOT NULL,
+  `distance_m` float NOT NULL,
+  KEY `store_location_b` (`store_location_b`),
+  KEY `store_location_a` (`store_location_a`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -224,15 +227,14 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `email` varchar(11) NOT NULL DEFAULT '',
-  `hashed_password` varchar(11) NOT NULL DEFAULT '',
+  `hashed_password` varchar(255) NOT NULL DEFAULT '',
   `address_id` int(11) unsigned NOT NULL,
   `store_id_avoid_list` varchar(255) DEFAULT NULL,
   `verified` tinyint(1) NOT NULL DEFAULT '0',
-  `creation_date` timestamp NULL DEFAULT NULL,
-  `modify_date` timestamp NULL DEFAULT NULL,
+  `creation_date` datetime DEFAULT NULL,
+  `modify_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_address` (`address_id`),
-  CONSTRAINT `user_address` FOREIGN KEY (`address_id`) REFERENCES `address` (`id`)
+  KEY `user_address` (`address_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

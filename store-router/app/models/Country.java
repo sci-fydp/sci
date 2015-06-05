@@ -7,7 +7,7 @@ import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
 @Entity
-public class City extends Model {
+public class Country extends Model {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -17,6 +17,6 @@ public class City extends Model {
 	
 	public String name;
 	
-    public static Model.Finder<String, City> find = new Model.Finder<String, City>(String.class, City.class);
+    public static Model.Finder<String, Country> find = new Model.Finder<String, Country>(String.class, Country.class);
 
 }
