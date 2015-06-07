@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +26,7 @@ public class GrocerySolver
 		return instance;
 	}
 	
-	public ArrayList<Location> solve(SearchParams params)
+	public SolutionRoute solve(SearchParams params)
 	{
 		System.out.println("FIND OPT");
 		List<Store> someStores = findOptimalStores(params);
@@ -34,55 +35,34 @@ public class GrocerySolver
 			System.out.println("NOSOLN????");
 		}
 		ArrayList<Store> stores = new ArrayList<Store>(someStores);
-		System.out.println("STORE LOCS");
+		SolutionRoute soln = solveDistance(stores, params);
+		/*System.out.println("STORE LOCS");
 		ArrayList<Location> storeLocations = getStoreLocations(stores);
 		System.out.println("LOOKING FOR DISTANCE");
 		double[][] distances = getAllDistances(storeLocations, params.origin);
 		ArrayList<Location> goalRoute = findBestRoute(storeLocations, distances, params.origin);
-		return goalRoute;
+		*/
+		return soln;
 	}
 	
-	private ArrayList<Location> findBestRoute (ArrayList<Location> storeLocations, double[][] distances, Location origin)
+	/*
+	 * public class SolutionRoute
+{
+	ArrayList<Store> stores;
+	ArrayList<Location> locations;
+	double price;
+	double distance;
+
+}
+	 */
+	private SolutionRoute solveDistance(ArrayList<Store> stores, SearchParams params)
 	{
-		Location currentLoc = origin;
-		int currentLocIndex = storeLocations.size();
-		ArrayList<Location> route = new ArrayList<Location>();
-		
-		Set<Integer> takenLocations = new HashSet<Integer>();
-		takenLocations.add(currentLocIndex);
-		
-		//??? 
-		double bestDistance;
-		Location bestLocation;
-		int bestIndex;
-		for (int store = 0; store < storeLocations.size(); store++)
-		{
-			bestIndex = 0;
-			bestDistance = 9999999;
-			bestLocation = null;
-			
-			for (int storeIndex = 0; storeIndex < storeLocations.size(); storeIndex++)
-			{
-				if (!takenLocations.contains(storeIndex))
-				{
-					double distance = distances[currentLocIndex][storeIndex];
-					if (distance < bestDistance)
-					{
-						bestIndex = storeIndex;
-						bestLocation = storeLocations.get(storeIndex);
-						bestDistance = distance;
-					}
-				}
-			}
-			
-			currentLoc = bestLocation;
-			currentLocIndex = bestIndex;
-			route.add(currentLoc);
-			takenLocations.add(currentLocIndex);
-		}
-		
-		route.add(origin);
-		return route;
+		ArrayList<Location> storeLocations = getStoreLocations(stores);
+		double[][] distances = getAllDistances(storeLocations, params.origin);
+		DistanceSolver solver = new BruteForceDistanceSolver();
+		SolutionRoute soln = solver.findBestRoute(stores, distances, params.origin);
+		//stores = rearrangeStores(stores, goalRoute);
+		return soln;
 	}
 	
 	private ArrayList<Location> getStoreLocations(ArrayList<Store> stores)
@@ -120,73 +100,6 @@ public class GrocerySolver
 		
 		return distanceArray;
 	}
-
-	/*private ArrayList<Store> findOptimalStores(SearchParams params)
-	{
-		 ArrayList<Store> stores = new ArrayList<Store>();
-		
-		 HashSet<Product> requiredProducts = params.groceryList;
-		 HashSet<Product> productsSoFar = new HashSet<Product>();
-	
-		 double beginRange = 0;
-		 double endRange = 0 + DISTANCE_INTERVALS;
-		 while (productsSoFar.size() != requiredProducts.size())
-		 {
-			 ArrayList<Store> currentStores = RandomDatabase.getInstance().getStoresInRegion(beginRange, endRange, params.origin);
-			 if (currentStores.size() == 0)
-			 {
-				 System.out.println("FAILED");
-				 break;
-			 }
-			 final Location origin = params.origin;
-			
-			Collections.sort(currentStores, new Comparator<Store>()
-			{
-				 @Override
-				public int compare(Store o1, Store o2)
-				{
-					double distance1 = Location.getDistance(o1.getLocation(), origin);
-					double distance2 = Location.getDistance(o2.getLocation(), origin);
-					if (distance1 > distance2)
-					{
-						return 1;
-					}
-					else if (distance2 > distance1)
-					{
-						return -1;
-					}
-					return 0;
-				}
-			});
-			 
-			 for (Store store : currentStores)
-			 {
-				 boolean hasNew = false;
-				 List<Product> products = store.getProducts();
-				 for (Product product : products)
-				 {
-					 if (requiredProducts.contains(product))
-					 {
-						 if (!productsSoFar.contains(product))
-						 {
-							 hasNew = true;
-							 productsSoFar.add(new Product(product));
-						 }
-					 }
-				 }
-				 if (hasNew)
-				 {
-					 stores.add(store);
-				 }
-			 }
-			 
-			 beginRange += DISTANCE_INTERVALS;
-			 endRange += DISTANCE_INTERVALS;
-		 }
-		 
-		 
-		 return stores;
-	}*/
 	
 	private List<Store> findOptimalStores(SearchParams params)
 	{
@@ -224,7 +137,7 @@ public class GrocerySolver
 			 for (Store store : currentStores)
 			 {
 				 boolean hasNew = false;
-				 List<Product> products = store.getProducts();
+				 Set<Product> products = store.getProducts();
 				 System.out.println("STORE " + store.name + " HAS X PRODUCTS " + products.size());
 				 for (Product product : products)
 				 {
@@ -287,6 +200,25 @@ public class GrocerySolver
 		 return bestSoln;
 	}
 	
+	//TODO
+	private double getCost(SearchParams params, List<Store> stores)
+	{
+		HashMap<Store, List<Product>> buyFrom = new HashMap<Store, List<Product>>();
+		for (Product product : params.groceryList)
+		{
+			double bestPrice = 43289048;
+			Store bestStore = null;
+			for (Store store : stores)
+			{
+				if (store.hasProduct(product))
+				{
+					
+				}
+			}
+		}
+		return 0;
+	}
+	
 	private static void findStoreSolutions(List<Store> stores,  int[] productListCount, Set<List<Store>> someSolutions, List<Product> productList)
 	{
 		for (Store store : stores)
@@ -294,7 +226,7 @@ public class GrocerySolver
 			 int[] productCount = new int[productListCount.length];
 			 System.arraycopy( productListCount, 0, productCount, 0, productListCount.length );
 			 
-			 List<Product> products = store.getProducts();
+			 Set<Product> products = store.getProducts();
 			 for (Product product : products)
 			 {
 				 int index = productList.indexOf(product);

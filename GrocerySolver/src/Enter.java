@@ -13,7 +13,8 @@ public class Enter
 		products.add(new Product("C"));
 		params.groceryList = products;
 		params.origin = new Location(0, 0);
-		ArrayList<Location> route = GrocerySolver.getInstance().solve(params);
+		SolutionRoute soln = GrocerySolver.getInstance().solve(params); 
+		ArrayList<Location> route = soln.locations;
 		System.out.println("ROUTE IS");
 		//Should probably return store routes instead of routes.... meh.
 		for (Location loc : route)

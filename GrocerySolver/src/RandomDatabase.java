@@ -1,5 +1,6 @@
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class RandomDatabase
@@ -23,7 +24,7 @@ public class RandomDatabase
 			int locx = Integer.parseInt(randomInitData[i+1]);
 			int locy = Integer.parseInt(randomInitData[i+2]);
 			String[] productNames = randomInitData[i+3].split(",");
-			List<Product> products = new ArrayList<Product>();
+			Set<Product> products = new HashSet<Product>();
 			for (String productName : productNames)
 			{
 				products.add(new Product(productName.trim()));

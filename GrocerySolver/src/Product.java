@@ -2,7 +2,7 @@
 public class Product
 {
 
-	int quantity = 99999;
+	int quantity = 0;
 	String name;
 	public Product()
 	{
