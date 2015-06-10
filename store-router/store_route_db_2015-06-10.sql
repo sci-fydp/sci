@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.25)
 # Database: store_route_db
-# Generation Time: 2015-06-05 03:55:19 +0000
+# Generation Time: 2015-06-10 15:32:01 +0000
 # ************************************************************
 
 
@@ -101,6 +101,7 @@ DROP TABLE IF EXISTS `item`;
 CREATE TABLE `item` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
+  `description` varchar(255) DEFAULT NULL,
   `category_id` int(11) unsigned NOT NULL,
   `creation_date` datetime DEFAULT NULL,
   `modify_date` datetime DEFAULT NULL,

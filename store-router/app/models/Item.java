@@ -20,6 +20,8 @@ public class Item extends DatedModel {
 	
 	public String name;
 	
+	public String description;
+	
 	@ManyToOne
 	@Required
 	@JoinColumn(name="category_id", referencedColumnName="id")

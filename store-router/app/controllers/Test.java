@@ -71,6 +71,7 @@ public class Test extends Controller {
     	
     	Item item = new Item();
     	item.name = "TESTITEM";
+    	item.description = "TESTDESCRIPTION";
     	item.inventoryCategory = inventoryCategory;
     	item.save();
     	item = Item.find.where().eq("id", item.id).findUnique();
