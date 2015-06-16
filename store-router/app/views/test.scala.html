@@ -1,0 +1,100 @@
+@(city: City,
+stateProvince: StateProvince,
+country: Country,
+address: Address,
+holiday: Holiday,
+inventoryCategory: InventoryCategory,
+item: Item,
+store: Store,
+location: StoreLocation,
+locationHoliday: LocationHoliday,
+locationItem: LocationItem,
+distance: StoreLocationDistance,
+user: User
+)
+
+<div>Created</div>
+<div>City: @city.id @city.name</div>
+<br>
+
+<div>Created</div>
+<div>StateProvince: @stateProvince.id @stateProvince.name</div>
+<br>
+
+<div>Created</div>
+<div>Country: @country.id @country.name</div>
+<br>
+
+<div>Created</div>
+<div>Address: @address.id @address.address</div>
+<div>City: @address.city.id</div>
+<div>Postal: @address.postalCode</div>
+<div>StateProvince: @address.stateProvince.id</div>
+<div>Country: @address.country.id</div>
+<br>
+
+<div>Created</div>
+<div>Holiday: @holiday.id @holiday.name</div>
+<div>DayOfMonth: @holiday.dayOfMonth</div>
+<div>DayOfWeek: @holiday.dayOfWeek</div>
+<div>MonthOfYear: @holiday.monthOfYear</div>
+<div>IterationOfWeek: @holiday.iterationOfWeek</div></div>
+<br>
+
+<div>Created</div>
+<div>InventoryCategory: @inventoryCategory.id @inventoryCategory.name</div>
+<br>
+
+<div>Created</div>
+<div>Item: @item.id @item.name</div>
+<div>InventoryCategory: @item.inventoryCategory.id</div>
+<div>CreationDate: @item.creationDate</div>
+<div>ModifyDate: @item.modifyDate</div>
+<br>
+
+<div>Created</div>
+<div>Store: @store.id @store.name</div>
+<div>InventoryCategory: @store.inventoryCategory.id</div>
+<div>Active: @store.active</div>
+<div>CreationDate: @item.creationDate</div>
+<div>ModifyDate: @item.modifyDate</div>
+<br>
+
+<div>Created</div>
+<div>Location: @location.id</div>
+<div>Store: @location.store.id</div>
+<div>Address: @location.address.id</div>
+<div>Active: @location.active</div>
+<div>SundayBeginTime: @location.sundayBeginTime</div>
+<div>SundayEndTime: @location.sundayEndTime</div>
+<div>CreationDate: @location.creationDate</div>
+<div>ModifyDate: @location.modifyDate</div>
+<br>
+
+<div>Created</div>
+<div>LocationHoliday.Location: @locationHoliday.location.id</div>
+<div>LocationHoliday.Holiday: @locationHoliday.holiday.id</div>
+<br>
+
+<div>Created</div>
+<div>LocationItem.Location: @locationItem.storeLocation.id</div>
+<div>LocationItem.Item: @locationItem.item.id</div>
+<div>LocationItem.Price: @locationItem.price</div>
+<div>LocationItem.Stock: @locationItem.stockCount</div>
+<br>
+
+<div>Created</div>
+<div>Distance.StoreLocationA: @distance.storeLocationA.id</div>
+<div>Distance.StoreLocationB: @distance.storeLocationB.id</div>
+<div>Distance: @distance.distanceM</div>
+<br>
+
+<div>Created</div>
+<div>User: @user.id</div>
+<div>Email: @user.email</div>
+<div>HashedPassword: @user.hashedPassword</div>
+<div>Address: @user.address.id</div>
+<div>AvoidList: @user.storeIdAvoidList</div>
+<div>Verified: @user.verified</div>
+<div>CreationDate: @item.creationDate</div>
+<div>ModifyDate: @item.modifyDate</div>

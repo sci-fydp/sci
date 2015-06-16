@@ -1,0 +1,26 @@
+<script src="/assets/js/jquery-2.1.4.min.js"></script>
+
+<input id="search_bar" placeholder="Enter your search term..." type="text" value="" name="search" id="search">
+
+<script>
+
+	var webserviceBase = 'http://localhost:9000/';
+
+	$(function() {
+		$('#search_bar').keyup(function() {
+			$.ajax({
+				method: "GET",
+				url: webserviceBase + "search?s=" + $('#search_bar').val(),
+			})
+			.done(function( msg ) {
+				console.log(msg);
+			})
+			.fail(function() {
+				alert( "error" );
+			})
+			.always(function() {
+				console.log("finished");
+			});
+		});
+	});
+</script>
