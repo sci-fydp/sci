@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -34,6 +35,8 @@ public class RandomData
 	static final int seed = 0;
 	static Random rand = new Random(seed);
 	
+	static final int stopValue = 20;
+	
 	public static void main(String[] args)
 	{
 		List<String> storeNames;
@@ -48,6 +51,9 @@ public class RandomData
 			storeNames = readSmallTextFile(INPUT_STORE_NAME);
 			locationNames = readSmallTextFile(INPUT_LOCATION_NAME);
 			itemNames = readSmallTextFile(INPUT_ITEMS_NAME);
+			
+			items = parseItems(itemNames);
+			
 			PrintWriter writer = new PrintWriter(OUTPUT_DISTANCE_FILE_NAME, "UTF-8");
 			StringBuilder builder = new StringBuilder();
 			
@@ -116,19 +122,30 @@ public class RandomData
 			for (String store : storeNames)
 			{
 				storeItems.clear();
+				int value = 0;
+				
 				builder.setLength(0);
+				
+				
 				builder.append(store);
 				builder.append("\t\t\t");
 				
 				///whatever... get items
-				for (int i = 0; i < 3; i++)
+				//Break when too few store value ||
+				while (true)
+					
 				{
-					String itemName = itemNames.get(rand.nextInt(itemNames.size()));
-					if (storeItems.contains(itemName))
+					
+					
+					RandomItem item = items.get(rand.nextInt(items.size()));
+					if (storeItems.contains(item.name))
 						continue;
-					int cost = rand.nextInt(maxItemValue - minItemValue) + minItemValue;
-					builder.append(new RandomItem(itemName, cost).toString());
-					storeItems.add(itemName);
+					//int cost = rand.nextInt(maxItemValue - minItemValue) + minItemValue;
+					builder.append(item.toString());
+					storeItems.add(item.name);
+					value += item.cost;
+					if (value > maxStoreValue || (value > minStoreValue && rand.nextInt(100) < stopValue))
+						break;
 				}
 				
 				writer.println(builder.toString());
@@ -148,7 +165,24 @@ public class RandomData
 			throws IOException
 	{
 		Path path = Paths.get(aFileName);
-		return Files.readAllLines(path, ENCODING);
+		List<String> lines = Files.readAllLines(path, ENCODING);
+		List<String> words = new ArrayList<String>();
+		for (String line : lines)
+		{
+			String[] lineWords = line.split("\\s+");
+			words.addAll(Arrays.asList(lineWords));
+		}
+		return words;
 	}
 
+	private static List<RandomItem> parseItems(List<String> itemNames)
+	{
+		List<RandomItem> items = new ArrayList<RandomItem>();
+		for (int i = 0; i < itemNames.size(); i+=2)
+		{
+			RandomItem item = new RandomItem(itemNames.get(i), itemNames.get(i+1));
+			items.add(item);
+		}
+		return items;
+	}
 }

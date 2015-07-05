@@ -1,3 +1,6 @@
-Sobeys			Oranges 5 Item1 582 
-Drugs			Apples 586 Oranges 960 
-Land			Apples 457 Item1 54 
+Sobeys			Oranges 7 MediumItem 48 Apples 5 SomethingElse 107 
+Drugs			Apples 4 MediumItem 34 ExpensiveItem 95 
+Land			VeryExpensiveItem 108 Apples 4 
+Sobeys2			ExpensiveItem 90 
+Drugs2			MediumItem 47 
+Land2			SomethingElse 78 VeryExpensiveItem 88 
