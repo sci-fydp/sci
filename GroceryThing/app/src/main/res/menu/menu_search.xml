@@ -3,5 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.fydp.sci.grocerything.SearchActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+        android:orderInCategory="100" />
+
+    <item
+        android:id="@+id/action_send_feedback"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="test"/>
 </menu>
