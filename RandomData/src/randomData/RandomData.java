@@ -37,6 +37,10 @@ public class RandomData
 	
 	static final int stopValue = 20;
 	
+	static final int numStores = 100;
+	static final int numLocations = 10;
+	//static final int numItems = 200;
+	
 	public static void main(String[] args)
 	{
 		List<String> storeNames;
@@ -48,8 +52,18 @@ public class RandomData
 		
 		try
 		{
-			storeNames = readSmallTextFile(INPUT_STORE_NAME);
-			locationNames = readSmallTextFile(INPUT_LOCATION_NAME);
+			storeNames = new ArrayList<String>();
+			locationNames = new ArrayList<String>();
+			for (int i = 0; i < numStores; i++)
+			{
+				storeNames.add("Store_" + i);
+			}
+			for (int i = 0; i < numLocations; i++)
+			{
+				locationNames.add("Location_" + i);
+			}
+			//storeNames = readSmallTextFile(INPUT_STORE_NAME);
+			//locationNames = readSmallTextFile(INPUT_LOCATION_NAME);
 			itemNames = readSmallTextFile(INPUT_ITEMS_NAME);
 			
 			items = parseItems(itemNames);
@@ -81,7 +95,8 @@ public class RandomData
 			{
 				builder.setLength(0);
 				builder.append(store);
-				builder.append("\t\t\t");
+				//builder.append("\t\t\t");
+				builder.append(" ");
 				for (int col = 0; col < totalLocations; col++)
 				{
 					
@@ -98,7 +113,8 @@ public class RandomData
 			{
 				builder.setLength(0);
 				builder.append(location);
-				builder.append("\t\t\t");
+				builder.append(" ");
+				//builder.append("\t\t\t");
 				for (int col = 0; col < totalLocations; col++)
 				{
 					builder.append(distances[row][col]);
@@ -128,8 +144,8 @@ public class RandomData
 				
 				
 				builder.append(store);
-				builder.append("\t\t\t");
-				
+				//builder.append("\t\t\t");
+				builder.append(" ");
 				///whatever... get items
 				//Break when too few store value ||
 				while (true)
