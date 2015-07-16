@@ -15,21 +15,24 @@ import java.util.Random;
 
 public class RandomData
 {
-	static final String OUTPUT_DISTANCE_FILE_NAME = "outputDistance.txt";
-	static final String OUTPUT_INVENTORY_FILE_NAME = "outputInventory.txt";
+	static final int numStores = 100;
+	static final int numLocations = 20;
+	
+	static final String OUTPUT_DISTANCE_FILE_NAME = "outputDistanceLarge.txt";
+	static final String OUTPUT_INVENTORY_FILE_NAME = "outputInventoryLarge.txt";
 	static final String INPUT_STORE_NAME = "stores.txt";
 	static final String INPUT_LOCATION_NAME = "locations.txt";
 	static final String INPUT_ITEMS_NAME = "items.txt";
 	final static Charset ENCODING = StandardCharsets.UTF_8;
 
 	
-	static final int MAX_DISTANCE = 2000;
+	static final int MAX_DISTANCE = 1000;
 	static final int MIN_DISTANCE = 1;
 	
-	static final int maxStoreValue = 100;
-	static final int minStoreValue = 5;
+	static final int maxStoreValue = 1000;
+	static final int minStoreValue = 50;
 	
-	static final int maxItemValue = 1000;
+	static final int maxItemValue = 10000;
 	static final int minItemValue = 1;
 	
 	static final int seed = 0;
@@ -37,8 +40,7 @@ public class RandomData
 	
 	static final int stopValue = 20;
 	
-	static final int numStores = 100;
-	static final int numLocations = 10;
+
 	//static final int numItems = 200;
 	
 	public static void main(String[] args)
@@ -188,6 +190,7 @@ public class RandomData
 			String[] lineWords = line.split("\\s+");
 			words.addAll(Arrays.asList(lineWords));
 		}
+		
 		return words;
 	}
 
