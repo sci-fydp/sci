@@ -67,12 +67,14 @@ public class SearchActivity extends Activity {
 
     private ArrayList<String> getGroceryNames()
     {
-        ArrayList<String> groceries = new ArrayList<String>();
+       ArrayList<String> ans = Model.getInstance().getGroceriesSearchable();
+
+       /* ArrayList<String> groceries = new ArrayList<String>();
         groceries.add("Drugs");
         groceries.add("More Drug");
         groceries.add("Apple");
-        //TODO get from model.
-        return groceries;
+        *///TODO get from model.
+        return ans;
     }
     private void init()
     {

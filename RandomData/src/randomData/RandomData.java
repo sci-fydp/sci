@@ -98,12 +98,12 @@ public class RandomData
 				builder.setLength(0);
 				builder.append(store);
 				//builder.append("\t\t\t");
-				builder.append(" ");
+				//builder.append(" ");
 				for (int col = 0; col < totalLocations; col++)
 				{
-					
-					builder.append(distances[row][col]);
 					builder.append(" ");
+					builder.append(distances[row][col]);
+					//builder.append(" ");
 				}
 				
 				writer.println(builder.toString());
@@ -115,12 +115,13 @@ public class RandomData
 			{
 				builder.setLength(0);
 				builder.append(location);
-				builder.append(" ");
+				//builder.append(" ");
 				//builder.append("\t\t\t");
 				for (int col = 0; col < totalLocations; col++)
 				{
-					builder.append(distances[row][col]);
 					builder.append(" ");
+					builder.append(distances[row][col]);
+					
 				}
 				
 				writer.println(builder.toString());

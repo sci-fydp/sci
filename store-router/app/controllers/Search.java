@@ -18,5 +18,10 @@ public class Search extends Controller {
     	List<Item> searchedItems = Item.find.where().contains("name", searchText).setMaxRows(10).findList();
     	return ok(Json.toJson(searchedItems));
     }
+	
+	public static Result getAllItemNames() {
+    	List<Item> searchedItems = Item.find.findList();
+    	return ok(Json.toJson(searchedItems));
+    }
     
 }
