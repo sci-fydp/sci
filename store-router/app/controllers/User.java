@@ -24,8 +24,8 @@ public class User extends Controller {
 		JsonNode addressJson = registrationJson.findPath("address");
 		
 		String email = registrationJson.get("email").toString();
-		String hashedPassword = registrationJson.get("email").toString();
-		String storeIdAvoidList = registrationJson.get("email").toString();
+		String hashedPassword = registrationJson.get("password").toString();
+		String storeIdAvoidList = registrationJson.get("avoidlist").toString();
 		
 		models.User user = models.User.find.where().eq("email", email).findUnique();
 		
