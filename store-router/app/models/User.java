@@ -34,6 +34,9 @@ public class User extends DatedModel {
 	
 	public Boolean verified;
 	
+	@Column(name="session_str")
+	public String sessionStr;
+	
     public static Model.Finder<String, User> find = new Model.Finder<String, User>(String.class, User.class);
 
     
