@@ -8,12 +8,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.fydp.sci.grocerything.DataModel.Model;
+
 
 public class LoginActivity extends Activity {
 
     EditText usernameInput;
     EditText passwordInput;
     Button loginButton;
+    Button registerButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,12 +30,23 @@ public class LoginActivity extends Activity {
 
     private void init()
     {
-        loginButton = (Button)findViewById(R.id.login_enterButton);
+        loginButton = (Button)findViewById(R.id.login_loginButton);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("Main", "Hello Login attempt");
                 Intent intent = new Intent(LoginActivity.this, SearchActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
+        registerButton = (Button)findViewById(R.id.login_registerButton);
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("Main", "Hello Login attempt");
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
 
             }

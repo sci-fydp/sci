@@ -46,9 +46,18 @@
         android:paddingRight="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/login_enterButton"
+        android:text="Login"
+        android:id="@+id/login_loginButton"
         android:layout_below="@+id/login_passwordInput"
+        android:layout_centerHorizontal="true" />
+    <Button
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:id="@+id/login_registerButton"
+        android:layout_below="@id/login_loginButton"
         android:layout_centerHorizontal="true" />
 
 

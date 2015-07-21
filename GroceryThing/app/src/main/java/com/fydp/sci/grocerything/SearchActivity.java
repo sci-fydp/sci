@@ -2,7 +2,6 @@ package com.fydp.sci.grocerything;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.fydp.sci.grocerything.DataModel.Model;
 
 import java.util.ArrayList;
 import java.util.HashMap;

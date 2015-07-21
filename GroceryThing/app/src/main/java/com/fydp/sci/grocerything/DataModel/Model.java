@@ -1,20 +1,14 @@
-package com.fydp.sci.grocerything;
+package com.fydp.sci.grocerything.DataModel;
 
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fydp.sci.grocerything.JSONHelper;
 
-import java.io.BufferedInputStream;
+import org.json.JSONArray;
+
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -25,6 +19,8 @@ public class Model {
 
     private static Model INSTANCE = null;
     private ArrayList<String> groceryNames;
+    private String userSession;
+
 
     public static Model getInstance()
     {
@@ -65,7 +61,7 @@ public class Model {
                    // urlConnection.setRequestMethod("GET");
                     String jsonString = readStream(urlConnection.getInputStream());
                     JSONArray mainObj = new JSONArray(jsonString);
-                    ans = parseItemNames(mainObj);
+                    ans = JSONHelper.parseItemNames(mainObj);
                     Log.d("EHH", "EHEHEH");
                 }
                 catch (Exception e) {
@@ -79,23 +75,7 @@ public class Model {
                 return ans;
 //            return returned;
         }
-        private ArrayList<String> parseItemNames(JSONArray mainArray)
-        {
-            ArrayList<String> strs = new ArrayList<String>();
-            try {
-                for (int i = 0; i < mainArray.length(); i++) {
-                    JSONObject itemObj = mainArray.getJSONObject(i);
-                    String name = itemObj.getString(JSONKeys.JKEY_ITEM_NAME);
-                    strs.add(name);
-                }
-            }
-            catch (JSONException e)
-            {
-                e.printStackTrace();
-            }
 
-            return strs;
-        }
         private String readStream(InputStream in) {
             String result = null;
             try {
