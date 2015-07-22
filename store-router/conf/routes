@@ -7,13 +7,13 @@ GET     /                           controllers.Search.index()
 
 GET     /search                     controllers.Search.search(s:String)
 
-<<<<<<< HEAD
-GET     /search/allItems                     controllers.Search.getAllItemNames()
-=======
-POST    /user                     	controllers.User.register()
-POST    /user                     	controllers.User.login()
-POST    /user                     	controllers.User.saveItem()
->>>>>>> master
+POST    /user/register                     	controllers.User.register()
+POST    /user/login                     	controllers.User.login()
+POST    /user/saveShoppingList              controllers.User.saveShoppingList()
+POST    /user/updateShoppingList			controllers.User.updateShoppingList()
+POST    /user/saveShoppingListItem			controllers.User.saveShoppingListItem()
+POST    /user/getShoppingLists				controllers.User.getShoppingLists()
+POST    /user/getShoppingList				controllers.User.getShoppingList()
 
 # Test for MySQL
 GET     /testall                    controllers.Test.testAll()

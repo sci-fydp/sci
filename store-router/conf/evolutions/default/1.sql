@@ -26,7 +26,9 @@ DROP TABLE IF EXISTS `store_location_distance`;
 
 DROP TABLE IF EXISTS `user`;
 
-DROP TABLE IF EXISTS `user_item`;
+DROP TABLE IF EXISTS `user_shopping_list`;
+
+DROP TABLE IF EXISTS `user_shopping_list_item`;
 
 
 
@@ -226,21 +228,31 @@ CREATE TABLE `user` (
 
 
 
-# Dump of table user_item
+# Dump of table user_shopping_list
 # ------------------------------------------------------------
 
-CREATE TABLE `user_item` (
-  `user_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `user_shopping_list` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `creation_date` datetime DEFAULT NULL,
+  `modify_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table user_shopping_list_item
+# ------------------------------------------------------------
+
+CREATE TABLE `user_shopping_list_item` (
+  `shopping_list_id` int(11) NOT NULL,
   `item_id` int(11) DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
-  `price` float DEFAULT NULL,
-  `creation_date` datetime DEFAULT NULL,
-  `modify_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`user_id`)
+  `price` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 
 # --- !Downs

@@ -1,10 +1,13 @@
 package controllers;
 
+import java.util.List;
 import java.util.Random;
 
 import models.Item;
 import models.StoreLocation;
-import models.UserItem;
+import models.UserShoppingList;
+import models.UserShoppingListItem;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -25,7 +28,7 @@ public class User extends Controller {
 		models.User user = models.User.find.where().eq("email", email).findUnique();
 		
 		if(user != null) {
-    		return status(450, "email not available");
+    		return ok(Json.toJson("error: email not available"));
 		}
 		
 //		String addressStr = addressJson.get("address_str").toString();
@@ -84,63 +87,154 @@ public class User extends Controller {
 		
 		String email = loginJson.get("email").toString();
 		String hashedPassword = loginJson.get("password").toString();
+		String udid = loginJson.get("udid").toString();
 		
 		models.User user = models.User.find.where().eq("email", email).eq("hashedPassword", hashedPassword).findUnique();
 		
 		if(user == null) {
-			return status(451, "login failed");
+			return ok(Json.toJson("error: login failed"));
 		}
 		
+		user.udid = udid;
 		user.sessionStr = getRandomHexString(255);
 		user.update();
 		
 		return ok("session=" + user.sessionStr);
 	}
 	
-	public static Result saveItem() {
+	public static Result saveShoppingList() {
 		JsonNode json = request().body().asJson();
 		
-		JsonNode saveItemJson = json.findPath("save");
-		JsonNode userJson = saveItemJson.findPath("user");
+		JsonNode saveShoppingListJson = json.findPath("save");
+		JsonNode userJson = saveShoppingListJson.findPath("user");
+
+		int userId = userJson.get("user_id").intValue();
+		String sessionStr = userJson.get("session").toString();
+		
+		String name = saveShoppingListJson.get("name").toString();
+		
+		models.User user = models.User.find.where().eq("id", userId).eq("sessionStr", sessionStr).findUnique();
+		
+		UserShoppingList shoppingList = new UserShoppingList();
+		shoppingList.userId = user.id;
+		shoppingList.name = name;
+		shoppingList.save();
+		
+		return ok(Json.toJson(shoppingList));
+	}
+	
+	public static Result updateShoppingList() {
+		JsonNode json = request().body().asJson();
+		
+		JsonNode updateShoppingListJson = json.findPath("update");
+		JsonNode userJson = updateShoppingListJson.findPath("user");
+
+		int userId = userJson.get("user_id").intValue();
+		String sessionStr = userJson.get("session").toString();
+		
+		int shoppingListId = updateShoppingListJson.get("id").intValue();
+		String name = updateShoppingListJson.get("name").toString();
+		
+		models.User user = models.User.find.where().eq("id", userId).eq("sessionStr", sessionStr).findUnique();
+		
+		UserShoppingList shoppingList = UserShoppingList.find.where().eq("id", shoppingListId).findUnique();
+		shoppingList.userId = user.id;
+		shoppingList.name = name;
+		shoppingList.update();
+		
+		return ok(Json.toJson(shoppingList));
+	}
+	
+	public static Result saveShoppingListItem() {
+		JsonNode json = request().body().asJson();
+		
+		JsonNode saveShoppingItemJson = json.findPath("save");
+		JsonNode userJson = saveShoppingItemJson.findPath("user");
 		
 		int userId = userJson.get("user_id").intValue();
 		String sessionStr = userJson.get("session").toString();
 		
-		int itemId = saveItemJson.get("item_id").intValue();
-		int locationId = saveItemJson.get("location_id").intValue();
-		String name = saveItemJson.get("name").toString();
-		String description = saveItemJson.get("description").toString();
-		Float price = saveItemJson.get("price").floatValue();
-
 		models.User user = models.User.find.where().eq("id", userId).eq("sessionStr", sessionStr).findUnique();
 		
-		long minutes = 5 * 60000;
-		
-		if(user == null || System.currentTimeMillis() - user.modifyDate.getTime() > minutes) {
-			return status(452, "unauthorized action");
+		if(user == null) {
+			return ok(Json.toJson("error: unauthorized action"));
 		}
+		
+		int shoppingListId = saveShoppingItemJson.get("shopping_list_id").intValue();
+		int itemId = saveShoppingItemJson.get("item_id").intValue();
+		int locationId = saveShoppingItemJson.get("location_id").intValue();
+		String name = saveShoppingItemJson.get("name").toString();
+		String description = saveShoppingItemJson.get("description").toString();
+		Float price = saveShoppingItemJson.get("price").floatValue();
+		
+		UserShoppingList shoppingList = UserShoppingList.find.where().eq("id", shoppingListId).findUnique();
+
+		if(shoppingList == null) {
+			return ok(Json.toJson("error: invalid shopping list id"));
+		}
+		
+		UserShoppingListItem shoppingListItem = new UserShoppingListItem();
+		shoppingListItem.shoppingList = shoppingList;
 		
 		Item item = Item.find.where().eq("id", itemId).findUnique();
-		StoreLocation location = StoreLocation.find.where().eq("id", locationId).findUnique();
-		
-		UserItem userItem = new UserItem();
-		userItem.user = user;
-		
 		if(item != null) {
-			userItem.item = item;
+			shoppingListItem.item = item;
 		}
+		
+		StoreLocation location = StoreLocation.find.where().eq("id", locationId).findUnique();
 		if(location != null) {
-			userItem.location = location;
+			shoppingListItem.location = location;
 		}
 		
-		userItem.name = name;
+		shoppingListItem.name = name;
 		
-		userItem.description = description;
+		shoppingListItem.description = description;
 		
-		userItem.price = price;
+		shoppingListItem.price = price;
 		
-		userItem.save();
+		shoppingListItem.save();
 		
 		return ok("saved");
+	}
+	
+	public static Result getShoppingLists() {
+		JsonNode json = request().body().asJson();
+		
+		JsonNode getShoppingListJson = json.findPath("get");
+		JsonNode userJson = getShoppingListJson.findPath("user");
+		
+		int userId = userJson.get("user_id").intValue();
+		String sessionStr = userJson.get("session").toString();
+		
+		models.User user = models.User.find.where().eq("id", userId).eq("sessionStr", sessionStr).findUnique();
+		
+		if(user == null) {
+			return ok(Json.toJson("error: unauthorized action"));
+		}
+		
+		List<UserShoppingList> lists = UserShoppingList.find.where().eq("user_id", userId).findList();
+		
+		return ok(Json.toJson(lists));
+	}
+	
+	public static Result getShoppingList() {
+		JsonNode json = request().body().asJson();
+		
+		JsonNode getShoppingListJson = json.findPath("get");
+		JsonNode userJson = getShoppingListJson.findPath("user");
+		
+		int userId = userJson.get("user_id").intValue();
+		String sessionStr = userJson.get("session").toString();
+		int shoppingListId = getShoppingListJson.get("shopping_list_id").intValue();
+		
+		models.User user = models.User.find.where().eq("id", userId).eq("sessionStr", sessionStr).findUnique();
+		
+		if(user == null) {
+			return ok(Json.toJson("error: unauthorized action"));
+		}
+		
+		List<UserShoppingListItem> lists = UserShoppingListItem.find.where().eq("shopping_list_id", shoppingListId).findList();
+		
+		return ok(Json.toJson(lists));
 	}
 }

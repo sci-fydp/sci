@@ -37,6 +37,9 @@ public class User extends DatedModel {
 	@Column(name="session_str")
 	public String sessionStr;
 	
+	@Column(name="udid")
+	public String udid;
+	
     public static Model.Finder<String, User> find = new Model.Finder<String, User>(String.class, User.class);
 
     

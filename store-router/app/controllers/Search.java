@@ -15,12 +15,10 @@ public class Search extends Controller {
     }
     
     public static Result search(String searchText) {
+    	if(searchText.length() < 3)
+    		return ok(Json.toJson("{message: \"need more characters\""));
+    	
     	List<Item> searchedItems = Item.find.where().contains("name", searchText).setMaxRows(10).findList();
-    	return ok(Json.toJson(searchedItems));
-    }
-	
-	public static Result getAllItemNames() {
-    	List<Item> searchedItems = Item.find.findList();
     	return ok(Json.toJson(searchedItems));
     }
     

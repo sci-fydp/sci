@@ -3,18 +3,16 @@ package models;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import models.base.DatedModel;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
-public class UserItem extends DatedModel {
+public class UserShoppingListItem extends Model {
 
 	private static final long serialVersionUID = 1L;
 	
-	@ManyToOne
 	@Required
-	@JoinColumn(name="user_id", referencedColumnName="id")
-	public User user;
+	@JoinColumn(name="shopping_list_id", referencedColumnName="id")
+	public UserShoppingList shoppingList;
 	
 	@ManyToOne
 	@JoinColumn(name="item_id", referencedColumnName="id")
@@ -30,5 +28,5 @@ public class UserItem extends DatedModel {
 	
 	public Float price;
     
-    public static Model.Finder<String, UserItem> find = new Model.Finder<String, UserItem>(String.class, UserItem.class);
+    public static Model.Finder<String, UserShoppingListItem> find = new Model.Finder<String, UserShoppingListItem>(String.class, UserShoppingListItem.class);
 }
