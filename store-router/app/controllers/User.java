@@ -21,7 +21,7 @@ public class User extends Controller {
 		JsonNode json = request().body().asJson();
 		
 		JsonNode registrationJson = json.findPath("register");
-		JsonNode addressJson = registrationJson.findPath("address");
+//		JsonNode addressJson = registrationJson.findPath("address");
 		
 		String email = registrationJson.get("email").toString();
 		String hashedPassword = registrationJson.get("password").toString();
@@ -33,35 +33,35 @@ public class User extends Controller {
     		return status(450, "email not available");
 		}
 		
-		String addressStr = addressJson.get("address_str").toString();
-		String postalCode = addressJson.get("postal_code").toString();
-		int cityId = addressJson.get("city_id").intValue();
-		int stateProvinceId = addressJson.get("state_province_id").intValue();
-		int country_id = addressJson.get("country_id").intValue();
-		
-		City city = City.find.where().eq("id", cityId).findUnique();
-    	StateProvince stateProvince = StateProvince.find.where().eq("id", stateProvinceId).findUnique();
-    	Country country = Country.find.where().eq("id", country_id).findUnique();
-    	
-    	if(city == null || stateProvince == null || country == null) {
-    		return status(450, "address id(s) not valid");
-    	}
-    	
-    	Address address = Address.find.where().eq("address", addressStr).eq("city.id", city.id).eq("postalCode", postalCode).eq("stateProvince.id", stateProvince.id).eq("country.id", country.id).findUnique();
-    	
-    	if(address != null) {
-    		address = new Address();
-        	address.address = addressStr;
-        	address.city = city;
-        	address.postalCode = postalCode;
-        	address.stateProvince = stateProvince;
-        	address.country = country;
-        	address.save();
-        	address = Address.find.where().eq("id", address.id).findUnique();
-    	}
+//		String addressStr = addressJson.get("address_str").toString();
+//		String postalCode = addressJson.get("postal_code").toString();
+//		int cityId = addressJson.get("city_id").intValue();
+//		int stateProvinceId = addressJson.get("state_province_id").intValue();
+//		int country_id = addressJson.get("country_id").intValue();
+//		
+//		City city = City.find.where().eq("id", cityId).findUnique();
+//    	StateProvince stateProvince = StateProvince.find.where().eq("id", stateProvinceId).findUnique();
+//    	Country country = Country.find.where().eq("id", country_id).findUnique();
+//    	
+//    	if(city == null || stateProvince == null || country == null) {
+//    		return status(450, "address id(s) not valid");
+//    	}
+//    	
+//    	Address address = Address.find.where().eq("address", addressStr).eq("city.id", city.id).eq("postalCode", postalCode).eq("stateProvince.id", stateProvince.id).eq("country.id", country.id).findUnique();
+//    	
+//    	if(address != null) {
+//    		address = new Address();
+//        	address.address = addressStr;
+//        	address.city = city;
+//        	address.postalCode = postalCode;
+//        	address.stateProvince = stateProvince;
+//        	address.country = country;
+//        	address.save();
+//        	address = Address.find.where().eq("id", address.id).findUnique();
+//    	}
     	
 		user = new models.User();
-    	user.address = address;
+    	user.address = null;
     	user.email = email;
     	user.hashedPassword = hashedPassword;
     	user.storeIdAvoidList = storeIdAvoidList;
