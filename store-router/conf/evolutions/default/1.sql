@@ -26,6 +26,8 @@ DROP TABLE IF EXISTS `store_location_distance`;
 
 DROP TABLE IF EXISTS `user`;
 
+DROP TABLE IF EXISTS `user_item`;
+
 
 
 # Dump of table address
@@ -211,14 +213,35 @@ CREATE TABLE `user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `email` varchar(11) NOT NULL DEFAULT '',
   `hashed_password` varchar(255) NOT NULL DEFAULT '',
-  `address_id` int(11) unsigned NOT NULL,
+  `address_id` int(11) unsigned DEFAULT NULL,
   `store_id_avoid_list` varchar(255) DEFAULT NULL,
   `verified` tinyint(1) NOT NULL DEFAULT '0',
   `creation_date` datetime DEFAULT NULL,
   `modify_date` datetime DEFAULT NULL,
+
+  `session_str` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_address` (`address_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table user_item
+# ------------------------------------------------------------
+
+CREATE TABLE `user_item` (
+  `user_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL,
+  `location_id` int(11) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `price` float DEFAULT NULL,
+  `creation_date` datetime DEFAULT NULL,
+  `modify_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 
 # --- !Downs
 

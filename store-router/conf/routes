@@ -7,7 +7,13 @@ GET     /                           controllers.Search.index()
 
 GET     /search                     controllers.Search.search(s:String)
 
+<<<<<<< HEAD
 GET     /search/allItems                     controllers.Search.getAllItemNames()
+=======
+POST    /user                     	controllers.User.register()
+POST    /user                     	controllers.User.login()
+POST    /user                     	controllers.User.saveItem()
+>>>>>>> master
 
 # Test for MySQL
 GET     /testall                    controllers.Test.testAll()

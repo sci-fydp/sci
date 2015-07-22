@@ -1,13 +1,14 @@
 import java.util.List;
+import java.util.Set;
 
 
 public class Store
 {
 	private Location location;
-	private List<Product> products;
+	private Set<Product> products;
 	public String name;
 	
-	public Store(Location l, List<Product> gr, String name)
+	public Store(Location l, Set<Product> gr, String name)
 	{
 		location = l;
 		products = gr;
@@ -23,14 +24,20 @@ public class Store
 		this.location = location;
 	}
 
-	public List<Product> getProducts()
+	public Set<Product> getProducts()
 	{
 		return products;
 	}
 
-	public void setProducts(List<Product> products)
+	public void setProducts(Set<Product> products)
 	{
 		this.products = products;
 	}
+	
+	public boolean hasProduct(Product product)
+	{
+		return products.contains(product);
+	}
+
 
 }
