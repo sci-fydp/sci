@@ -40,6 +40,9 @@ public class JSONHelper {
             registerObj.put(JKEY_REGISTER_EMAIL, email);
             registerObj.put(JKEY_REGISTER_PASS, password);
             mainObj.put(JKEY_REGISTER, registerObj);
+            //TODO get UUID
+            //http://android-developers.blogspot.ca/2011/03/identifying-app-installations.html
+            //http://stackoverflow.com/questions/5088474/how-can-i-get-the-uuid-of-my-android-phone-in-an-application
         }
         catch(Exception e)
         {

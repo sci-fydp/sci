@@ -21,4 +21,12 @@ public class NetworkUtils {
         task.execute();
     }
 
+    public void findGroceryNames(String likeStr, int tag, SearchItemsAsyncTask.SearchListener lis)
+    {
+        SearchItemsAsyncTask task = new SearchItemsAsyncTask();
+        task.setListener(lis);
+        task.setDetails(likeStr, tag);
+        task.execute();
+    }
+
 }

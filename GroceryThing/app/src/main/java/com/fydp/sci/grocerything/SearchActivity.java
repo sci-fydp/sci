@@ -3,6 +3,8 @@ package com.fydp.sci.grocerything;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,18 +21,25 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.fydp.sci.grocerything.DataModel.Model;
+import com.fydp.sci.grocerything.NetworkUtils.NetworkUtils;
+import com.fydp.sci.grocerything.NetworkUtils.SearchItemsAsyncTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 
-public class SearchActivity extends Activity {
+public class SearchActivity extends Activity implements SearchItemsAsyncTask.SearchListener {
     ListView groceryListView;
     ArrayList<Grocery> groceries;
     StableArrayAdapter groceryListAdapter;
     AutoCompleteTextView searchTextView;
     RelativeLayout mainLayout;
+    ArrayAdapter<String> groceryNameAdapter;
+
+    int searchTerrorTag = 0; // this is terror.
+    HashSet<String> savedStrings = new HashSet<String>();//Real terror.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,9 +53,11 @@ public class SearchActivity extends Activity {
         mainLayout = (RelativeLayout) findViewById(R.id.search_mainLayout);
 
 
-        final ArrayList<String> groceryNames = getGroceryNames();
-        ArrayAdapter<String> groceryNameAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, groceryNames);
+        //final ArrayList<String> groceryNames = getGroceryNames();
+        groceryNameAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+
+
         searchTextView.setAdapter(groceryNameAdapter);
         searchTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -61,6 +72,29 @@ public class SearchActivity extends Activity {
                 mainLayout.requestFocus();
             }
 
+        });
+
+        searchTextView.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String str = s.toString();
+                searchTerrorTag++;
+                if (str.length() >= 3)
+                {
+                    NetworkUtils.getInstance().findGroceryNames(str, searchTerrorTag, SearchActivity.this);
+                }
+            }
         });
     }
 
@@ -90,6 +124,8 @@ public class SearchActivity extends Activity {
         groceries.add(new Grocery("Grocery2"));
         groceries.add(new Grocery("Drugs"));
     }
+
+
 
     private class StableArrayAdapter extends ArrayAdapter<Grocery> {
 
@@ -189,5 +225,19 @@ public class SearchActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    //Search Async task
+    @Override
+    public void searchComplete(ArrayList<String> similarStrs, int tag) {
+        if (searchTerrorTag == tag && similarStrs != null)
+        {
+            //Apparently dupes will appear. if not a set.
+            savedStrings.addAll(similarStrs);
+            groceryNameAdapter.clear();
+            groceryNameAdapter.addAll(savedStrings);
+
+            groceryNameAdapter.notifyDataSetChanged();
+        }
     }
 }

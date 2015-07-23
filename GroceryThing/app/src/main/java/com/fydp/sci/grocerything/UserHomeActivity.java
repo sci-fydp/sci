@@ -14,7 +14,7 @@ import android.widget.EditText;
 public class UserHomeActivity extends ActionBarActivity {
 
     Button newListButton;
-    Button viewListButton;
+    //Button viewListButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +36,7 @@ public class UserHomeActivity extends ActionBarActivity {
             }
         });
 
+        /*
         viewListButton = (Button)findViewById(R.id.userHome_viewListButton);
         viewListButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,6 +46,6 @@ public class UserHomeActivity extends ActionBarActivity {
                 //startActivity(intent);
 
             }
-        });
+        });*/
     }
 }
