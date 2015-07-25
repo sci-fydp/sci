@@ -24,7 +24,8 @@ public class User extends Controller {
 		String email = registrationJson.get("email").toString();
 		String hashedPassword = registrationJson.get("password").toString();
 		String storeIdAvoidList = registrationJson.get("avoidlist").toString();
-		
+		String udid = registrationJson.get("udid").toString();
+
 		models.User user = models.User.find.where().eq("email", email).findUnique();
 		
 		if(user != null) {
@@ -64,6 +65,7 @@ public class User extends Controller {
     	user.hashedPassword = hashedPassword;
     	user.storeIdAvoidList = storeIdAvoidList;
     	user.verified = false;
+    	user.udid = udid;
     	user.save();
     	user = models.User.find.where().eq("id", user.id).findUnique();
     	
