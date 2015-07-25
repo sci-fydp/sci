@@ -213,7 +213,7 @@ CREATE TABLE `store_location_distance` (
 
 CREATE TABLE `user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `email` varchar(11) NOT NULL DEFAULT '',
+  `email` varchar(255) NOT NULL DEFAULT '',
   `hashed_password` varchar(255) NOT NULL DEFAULT '',
   `address_id` int(11) unsigned DEFAULT NULL,
   `store_id_avoid_list` varchar(255) DEFAULT NULL,
