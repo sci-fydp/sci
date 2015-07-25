@@ -60,9 +60,8 @@ public class RegisterActivity extends Activity implements AccRegistrationAsyncTa
     public void registrationSuccess(String session)
     {
         progressDialog.dismiss();
-        //Model.getInstance().
         Toast.makeText(this, "Success", Toast.LENGTH_LONG).show();
-        //TODO register to model.
+        //TODO register to model. ? or not
         finish();
     }
     public void registrationFailure(String reason)

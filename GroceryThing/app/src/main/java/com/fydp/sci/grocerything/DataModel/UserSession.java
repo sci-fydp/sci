@@ -2,6 +2,12 @@ package com.fydp.sci.grocerything.DataModel;
 
 
 public class UserSession {
+
+    public UserSession(String session)
+    {
+        sessionKey = session;
+    }
+
     private String sessionKey;
     private String username;
 
