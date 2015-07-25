@@ -1,22 +1,28 @@
 package com.fydp.sci.grocerything;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.fydp.sci.grocerything.DataModel.Model;
+import com.fydp.sci.grocerything.NetworkUtils.AccLoginAsyncTask;
+import com.fydp.sci.grocerything.NetworkUtils.NetworkUtils;
 
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends Activity implements AccLoginAsyncTask.AccLoginListener {
 
     EditText usernameInput;
     EditText passwordInput;
     Button loginButton;
     Button registerButton;
+    ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,8 +41,22 @@ public class LoginActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Log.d("Main", "Hello Login attempt");
-                Intent intent = new Intent(LoginActivity.this, SearchActivity.class);
-                startActivity(intent);
+
+                //debugging
+                //TODO remove.
+                if (usernameInput.getText().toString().length() == 0 && passwordInput.getText().toString().length() == 0)
+                {
+                    //Call server and check for correctness.
+                    Intent intent = new Intent(LoginActivity.this, SearchActivity.class);
+                    startActivity(intent);
+                }
+                else
+                {
+                    progressDialog = ProgressDialog.show(LoginActivity.this, "Generic Processing Title",
+                            "Generic Processing Message", true);
+                    NetworkUtils.getInstance().login(usernameInput.getText().toString(), passwordInput.getText().toString(), LoginActivity.this);
+                }
+
 
             }
         });
@@ -53,6 +73,22 @@ public class LoginActivity extends Activity {
         });
         usernameInput = (EditText)findViewById(R.id.login_nameInput);
         passwordInput = (EditText)findViewById(R.id.login_passwordInput);
+    }
+
+    @Override
+    public void loginSuccess(String session) {
+        progressDialog.dismiss();
+        Toast.makeText(this, "hello", Toast.LENGTH_LONG).show();
+        Model.getInstance().loginSuccess(session);
+        Intent intent = new Intent(LoginActivity.this, UserHomeActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void loginFailure(String reason) {
+
+        progressDialog.dismiss();
+        Toast.makeText(this, reason, Toast.LENGTH_LONG).show();
     }
 /*
     @Override

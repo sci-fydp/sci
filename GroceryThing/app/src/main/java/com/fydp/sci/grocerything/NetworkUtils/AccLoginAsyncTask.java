@@ -5,8 +5,6 @@ import android.util.Log;
 
 import com.fydp.sci.grocerything.JSONHelper;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -15,27 +13,25 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
 
 //TODO inprogress.
-public class AccRegistrationAsyncTask extends AsyncTask<Void, Void, String> {
+public class AccLoginAsyncTask extends AsyncTask<Void, Void, String> {
 
-    AccRegistrationListener listener = null;
+    AccLoginListener listener = null;
     String email;
     String pass;
     boolean success = false;
-    public interface AccRegistrationListener
+    public interface AccLoginListener
     {
-        void registrationSuccess(String session);
-        void registrationFailure(String reason);
+        void loginSuccess(String session);
+        void loginFailure(String reason);
     }
 
-    public void setListener (AccRegistrationListener l)
+    public void setListener (AccLoginListener l)
     {
         listener = l;
     }
-    public void setRegistrationDetails(String email, String pass)
+    public void setLoginDetails(String email, String pass)
     {
         this.email = email;
         this.pass = pass;
@@ -46,7 +42,7 @@ public class AccRegistrationAsyncTask extends AsyncTask<Void, Void, String> {
         String ans = new String();
         HttpURLConnection urlConnection = null;
         try {
-            URL url = new URL("http://10.0.3.2:9000/user/register");
+            URL url = new URL("http://10.0.3.2:9000/user/login");
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
@@ -56,7 +52,7 @@ public class AccRegistrationAsyncTask extends AsyncTask<Void, Void, String> {
             urlConnection.setRequestMethod("POST");
             urlConnection.connect();
 
-            JSONObject jsonParam = JSONHelper.generateRegistrationJSON(email,pass);
+            JSONObject jsonParam = JSONHelper.generateLoginJSON(email,pass);
             DataOutputStream printout = new DataOutputStream(urlConnection.getOutputStream ());
             byte[] data=jsonParam.toString().getBytes("UTF-8");
             printout.write(data);
@@ -111,7 +107,7 @@ public class AccRegistrationAsyncTask extends AsyncTask<Void, Void, String> {
         if (listener != null)
         {
             if (success) {
-                listener.registrationSuccess(result);
+                listener.loginSuccess(result);
             }
             else
             {
@@ -119,12 +115,12 @@ public class AccRegistrationAsyncTask extends AsyncTask<Void, Void, String> {
                 {
                     result = "Something really went wrong";
                 }
-                listener.registrationFailure(result);
+                listener.loginFailure(result);
             }
         }
         else
         {
-            Log.d("AccRegistrationTask", "wat..");            
+            Log.d("AccLoginTask", "wat..");
         }
 
     }

@@ -38,8 +38,10 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
     RelativeLayout mainLayout;
     ArrayAdapter<String> groceryNameAdapter;
 
+    private static final int SEARCH_DROP_DOWN_HEIGHT = 200;
     int searchTerrorTag = 0; // this is terror.
     HashSet<String> savedStrings = new HashSet<String>();//Real terror.
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +61,7 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
 
 
         searchTextView.setAdapter(groceryNameAdapter);
+        searchTextView.setDropDownHeight(SEARCH_DROP_DOWN_HEIGHT);
         searchTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -98,19 +101,6 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
         });
     }
 
-
-
-    private ArrayList<String> getGroceryNames()
-    {
-       ArrayList<String> ans = Model.getInstance().getGroceriesSearchable();
-
-       /* ArrayList<String> groceries = new ArrayList<String>();
-        groceries.add("Drugs");
-        groceries.add("More Drug");
-        groceries.add("Apple");
-        *///TODO get from model.
-        return ans;
-    }
     private void init()
     {
         groceryListView = (ListView)findViewById(R.id.search_groceryList);

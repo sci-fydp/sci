@@ -21,6 +21,14 @@ public class NetworkUtils {
         task.execute();
     }
 
+    public void login(String emailAddress, String password, AccLoginAsyncTask.AccLoginListener listener)
+    {
+        AccLoginAsyncTask task = new AccLoginAsyncTask();
+        task.setListener(listener);
+        task.setLoginDetails(emailAddress, password);
+        task.execute();
+    }
+
     public void findGroceryNames(String likeStr, int tag, SearchItemsAsyncTask.SearchListener lis)
     {
         SearchItemsAsyncTask task = new SearchItemsAsyncTask();
