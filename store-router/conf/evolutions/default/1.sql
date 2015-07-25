@@ -220,8 +220,8 @@ CREATE TABLE `user` (
   `verified` tinyint(1) NOT NULL DEFAULT '0',
   `creation_date` datetime DEFAULT NULL,
   `modify_date` datetime DEFAULT NULL,
-
   `session_str` varchar(255) DEFAULT NULL,
+  `udid` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_address` (`address_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
