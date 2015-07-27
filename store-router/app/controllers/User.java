@@ -72,10 +72,10 @@ public class User extends Controller {
 	    	user.save();
 	    	user = models.User.find.where().eq("id", user.id).findUnique();
 	    	
-	    	return ok("registered with session=" + user.sessionStr);
+	    	return ok(Json.toJson("{id=" + user.id + ",session=" + user.sessionStr));
 		}
 		catch(Exception e) {
-			return ok("invalid request format");
+			return ok(Json.toJson("invalid request format"));
 		}
 	}
 	
@@ -109,10 +109,10 @@ public class User extends Controller {
 			user.sessionStr = getRandomHexString(255);
 			user.update();
 			
-			return ok("session=" + user.sessionStr);
+			return ok(Json.toJson("{id=" + user.id + ",session=" + user.sessionStr));
 		}
 		catch(Exception e) {
-			return ok("invalid request format");
+			return ok(Json.toJson("invalid request format"));
 		}
 	}
 	
@@ -138,7 +138,7 @@ public class User extends Controller {
 			return ok(Json.toJson(shoppingList));
 		}
 		catch(Exception e) {
-			return ok("invalid request format");
+			return ok(Json.toJson("invalid request format"));
 		}
 	}
 	
@@ -163,7 +163,7 @@ public class User extends Controller {
 			return ok(Json.toJson(lists));
 		}
 		catch(Exception e) {
-			return ok("invalid request format");
+			return ok(Json.toJson("invalid request format"));
 		}
 	}
 	
@@ -194,7 +194,7 @@ public class User extends Controller {
 			return ok(Json.toJson(shoppingList));
 		}
 		catch(Exception e) {
-			return ok("invalid request format");
+			return ok(Json.toJson("invalid request format"));
 		}
 	}
 	
@@ -222,7 +222,7 @@ public class User extends Controller {
 			return ok(Json.toJson("deleted"));
 		}
 		catch(Exception e) {
-			return ok("invalid request format");
+			return ok(Json.toJson("invalid request format"));
 		}
 	}
 	
@@ -276,10 +276,10 @@ public class User extends Controller {
 			
 			shoppingListItem.save();
 			
-			return ok("saved");
+			return ok(Json.toJson("saved"));
 		}
 		catch(Exception e) {
-			return ok("invalid request format");
+			return ok(Json.toJson("invalid request format"));
 		}
 	}
 	
@@ -305,7 +305,7 @@ public class User extends Controller {
 			return ok(Json.toJson(items));
 		}
 		catch(Exception e) {
-			return ok("invalid request format");
+			return ok(Json.toJson("invalid request format"));
 		}
 	}
 	
@@ -379,7 +379,7 @@ public class User extends Controller {
 			return ok(Json.toJson("updated"));
 		}
 		catch(Exception e) {
-			return ok("invalid request format");
+			return ok(Json.toJson("invalid request format"));
 		}
 	}
 	
@@ -434,7 +434,7 @@ public class User extends Controller {
 			return ok(Json.toJson("deleted"));
 		}
 		catch(Exception e) {
-			return ok("invalid request format");
+			return ok(Json.toJson("invalid request format"));
 		}
 	}
 }
