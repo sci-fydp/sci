@@ -3,7 +3,6 @@ package controllers;
 import java.util.List;
 import java.util.Random;
 
-import javassist.runtime.Desc;
 import models.Item;
 import models.StoreLocation;
 import models.UserShoppingList;
@@ -12,7 +11,6 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-import com.avaje.ebean.Expr;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class User extends Controller {
@@ -72,7 +70,9 @@ public class User extends Controller {
 	    	user.save();
 	    	user = models.User.find.where().eq("id", user.id).findUnique();
 	    	
-	    	return ok(Json.toJson("{id=" + user.id + ",session=" + user.sessionStr));
+	    	user.hashedPassword = null;
+	    	
+	    	return ok(Json.toJson(user));
 		}
 		catch(Exception e) {
 			return ok(Json.toJson("invalid request format"));
@@ -109,7 +109,9 @@ public class User extends Controller {
 			user.sessionStr = getRandomHexString(255);
 			user.update();
 			
-			return ok(Json.toJson("{id=" + user.id + ",session=" + user.sessionStr));
+			user.hashedPassword = null;
+			
+			return ok(Json.toJson(user));
 		}
 		catch(Exception e) {
 			return ok(Json.toJson("invalid request format"));
