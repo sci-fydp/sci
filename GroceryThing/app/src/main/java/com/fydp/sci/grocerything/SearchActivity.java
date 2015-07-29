@@ -1,7 +1,9 @@
 package com.fydp.sci.grocerything;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.fydp.sci.grocerything.DataModel.Model;
+import com.fydp.sci.grocerything.DataModel.ShoppingList;
 import com.fydp.sci.grocerything.NetworkUtils.NetworkUtils;
 import com.fydp.sci.grocerything.NetworkUtils.SearchItemsAsyncTask;
 
@@ -30,7 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 
 
-public class SearchActivity extends Activity implements SearchItemsAsyncTask.SearchListener {
+public class SearchActivity extends Activity implements SearchItemsAsyncTask.SearchListener, Model.ModelSaveShoppingListListener {
     ListView groceryListView;
     ArrayList<Grocery> groceries;
     StableArrayAdapter groceryListAdapter;
@@ -38,14 +41,37 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
     RelativeLayout mainLayout;
     ArrayAdapter<String> groceryNameAdapter;
 
+    private static final String SHOPPING_LIST_NAME_KEY = "LISTNAMEKEY";
+    private static final String NEW_SHOPPING_LIST_KEY = "NEWKEY";
     private static final int SEARCH_DROP_DOWN_HEIGHT = 200;
     int searchTerrorTag = 0; // this is terror.
     HashSet<String> savedStrings = new HashSet<String>();//Real terror.
+    private String shoppingListName;
+    private boolean isNew;
+    private ProgressDialog progressDialog;
+
+    //TODO STICK EXISTING GROCERIES IN?.... OR VIA MODEL..... hmm.....
+    public static Intent createIntent(Context context, String name, boolean isNew, List<Grocery> groceries)
+    {
+        Intent intent = new Intent(context, SearchActivity.class);
+        Bundle b = new Bundle();
+        b.putBoolean(NEW_SHOPPING_LIST_KEY, isNew);
+        b.putString(SHOPPING_LIST_NAME_KEY, name);
+        intent.putExtras(b);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        Bundle b = getIntent().getExtras();
+        this.shoppingListName = b.getString(SHOPPING_LIST_NAME_KEY);
+        this.isNew = b.getBoolean(NEW_SHOPPING_LIST_KEY);
+
+
+        setTitle(shoppingListName);
         init();
         createRandomData();
         groceryListAdapter = new StableArrayAdapter(this,
@@ -110,10 +136,9 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
 
     private void createRandomData() {
         groceries = new ArrayList<Grocery>();
-        groceries.add(new Grocery("Hello"));
-        groceries.add(new Grocery("Grocery2"));
-        groceries.add(new Grocery("Drugs"));
+        groceries.add(new Grocery("TestGrocery"));
     }
+
 
 
 
@@ -210,7 +235,8 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_shoppingList_save) {
+            saveToServer();
             return true;
         }
 
@@ -229,5 +255,23 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
 
             groceryNameAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void saveToServer()
+    {
+        progressDialog = ProgressDialog.show(SearchActivity.this, "Saving",
+                "Generic Saving Message", true);
+        Model.getInstance().saveShoppingList(this, shoppingListName, isNew, new ArrayList<Grocery>());
+    }
+
+    //Model Response
+    @Override
+    public void success(String str) {
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void failure(String reason) {
+        progressDialog.dismiss();
     }
 }

@@ -3,6 +3,8 @@ package com.fydp.sci.grocerything.NetworkUtils;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.fydp.sci.grocerything.DataModel.Model;
+import com.fydp.sci.grocerything.DataModel.UserSession;
 import com.fydp.sci.grocerything.JSONHelper;
 
 import org.json.JSONObject;
@@ -23,7 +25,7 @@ public class AccLoginAsyncTask extends AsyncTask<Void, Void, String> {
     boolean success = false;
     public interface AccLoginListener
     {
-        void loginSuccess(String session);
+        void loginSuccess(String msg);
         void loginFailure(String reason);
     }
 
@@ -42,7 +44,7 @@ public class AccLoginAsyncTask extends AsyncTask<Void, Void, String> {
         String ans = new String();
         HttpURLConnection urlConnection = null;
         try {
-            URL url = new URL("http://10.0.3.2:9000/user/login");
+            URL url = new URL(NetworkUtils.BASE_URL + "/user/login");
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
@@ -65,8 +67,16 @@ public class AccLoginAsyncTask extends AsyncTask<Void, Void, String> {
             {
 
                 ans = readStream( urlConnection.getInputStream());
-                Log.d("ANS", ans);
-                success = true;
+                UserSession sessionObj = JSONHelper.parseUserLoginJSON(ans);
+                if (sessionObj == null)
+                {
+                    //???? error.
+                }
+                else
+                {
+                    Model.getInstance().loginSuccess(sessionObj);
+                    success = true;
+                }
 
             }else{
                 System.out.println(urlConnection.getResponseMessage());
@@ -107,7 +117,7 @@ public class AccLoginAsyncTask extends AsyncTask<Void, Void, String> {
         if (listener != null)
         {
             if (success) {
-                listener.loginSuccess(result);
+                listener.loginSuccess("good... good...");
             }
             else
             {
