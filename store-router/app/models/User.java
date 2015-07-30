@@ -25,7 +25,6 @@ public class User extends DatedModel {
 	public String hashedPassword;
 	
 	@ManyToOne
-	@Required
 	@JoinColumn(name="address_id", referencedColumnName="id")
 	public Address address;
 	
