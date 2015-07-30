@@ -126,7 +126,7 @@ public class User extends Controller {
 			JsonNode userJson = saveShoppingListJson.findPath("user");
 	
 			int userId = userJson.get("user_id").intValue();
-			String sessionStr = userJson.get("session_str").toString().replaceAll("\"", "");
+			String sessionStr = userJson.get("sessionStr").textValue();
 			
 			String name = saveShoppingListJson.get("name").toString();
 			
@@ -152,7 +152,7 @@ public class User extends Controller {
 			
 			int userId = userJson.get("user_id").intValue();
 						
-			String sessionStr = userJson.get("session_str").toString().replaceAll("\"", "");
+			String sessionStr = userJson.get("sessionStr").textValue();
 						
 			models.User user = models.User.find.where().eq("id", userId).eq("sessionStr", sessionStr).findUnique();
 			
@@ -177,7 +177,7 @@ public class User extends Controller {
 			JsonNode userJson = updateShoppingListJson.findPath("user");
 	
 			int userId = userJson.get("user_id").intValue();
-			String sessionStr = userJson.get("session_str").toString().replaceAll("\"", "");
+			String sessionStr = userJson.get("sessionStr").textValue();
 			
 			int shoppingListId = updateShoppingListJson.get("id").intValue();
 			String name = updateShoppingListJson.get("name").toString();
@@ -208,7 +208,7 @@ public class User extends Controller {
 			JsonNode userJson = updateShoppingListJson.findPath("user");
 	
 			int userId = userJson.get("user_id").intValue();
-			String sessionStr = userJson.get("session_str").toString().replaceAll("\"", "");
+			String sessionStr = userJson.get("sessionStr").textValue();
 			
 			int shoppingListId = updateShoppingListJson.get("id").intValue();
 			
@@ -236,7 +236,7 @@ public class User extends Controller {
 			JsonNode userJson = saveShoppingItemJson.findPath("user");
 			
 			int userId = userJson.get("user_id").intValue();
-			String sessionStr = userJson.get("session_str").toString().replaceAll("\"", "");
+			String sessionStr = userJson.get("sessionStr").textValue();
 			
 			models.User user = models.User.find.where().eq("id", userId).eq("sessionStr", sessionStr).findUnique();
 			
@@ -293,7 +293,7 @@ public class User extends Controller {
 			JsonNode userJson = getShoppingListJson.findPath("user");
 			
 			int userId = userJson.get("user_id").intValue();
-			String sessionStr = userJson.get("session_str").toString().replaceAll("\"", "");
+			String sessionStr = userJson.get("sessionStr").textValue();
 			int shoppingListId = getShoppingListJson.get("shopping_list_id").intValue();
 			
 			models.User user = models.User.find.where().eq("id", userId).eq("sessionStr", sessionStr).findUnique();
@@ -341,7 +341,7 @@ public class User extends Controller {
 			JsonNode updateShoppingItemJson = json.findPath("update");
 			JsonNode userJson = updateShoppingItemJson.findPath("user");
 			int userId = userJson.get("user_id").intValue();
-			String sessionStr = userJson.get("session_str").toString().replaceAll("\"", "");
+			String sessionStr = userJson.get("sessionStr").textValue();
 			
 			models.User user = models.User.find.where().eq("id", userId).eq("sessionStr", sessionStr).findUnique();
 			
@@ -408,7 +408,7 @@ public class User extends Controller {
 			JsonNode deleteShoppingItemJson = json.findPath("delete");
 			JsonNode userJson = deleteShoppingItemJson.findPath("user");
 			int userId = userJson.get("user_id").intValue();
-			String sessionStr = userJson.get("session_str").toString().replaceAll("\"", "");
+			String sessionStr = userJson.get("sessionStr").textValue();
 			
 			models.User user = models.User.find.where().eq("id", userId).eq("sessionStr", sessionStr).findUnique();
 			

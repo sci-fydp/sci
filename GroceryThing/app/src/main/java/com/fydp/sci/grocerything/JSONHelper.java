@@ -117,8 +117,10 @@ public class JSONHelper {
         JSONObject saveShopListObj = new JSONObject();
         try
         {
-            saveShopListObj.put(JKEY_SAVE_KEY, getUserDataJSON());
-            saveShopListObj.put(JKEY_SHOPPING_LIST_NAME_KEY, shopListName);
+            JSONObject userObj = getUserDataJSON();
+            userObj.put(JKEY_SHOPPING_LIST_NAME_KEY, shopListName);
+            saveShopListObj.put(JKEY_SAVE_KEY, userObj);
+           // saveShopListObj.put(JKEY_SHOPPING_LIST_NAME_KEY, shopListName);
 
         }
         catch(Exception e)
