@@ -76,10 +76,9 @@ public class LoginActivity extends Activity implements AccLoginAsyncTask.AccLogi
     }
 
     @Override
-    public void loginSuccess(String session) {
+    public void loginSuccess(String msg) {
         progressDialog.dismiss();
-        Toast.makeText(this, "hello", Toast.LENGTH_LONG).show();
-        Model.getInstance().loginSuccess(session);
+        Toast.makeText(this, "hello " + msg, Toast.LENGTH_LONG).show();
         Intent intent = new Intent(LoginActivity.this, UserHomeActivity.class);
         startActivity(intent);
     }
