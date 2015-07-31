@@ -1,22 +1,13 @@
 package com.fydp.sci.grocerything.DataModel;
 
 
-import android.os.AsyncTask;
 import android.util.Log;
 
-import com.fydp.sci.grocerything.Grocery;
-import com.fydp.sci.grocerything.JSONHelper;
 import com.fydp.sci.grocerything.NetworkUtils.AbstractShoppingListAsyncTask;
+import com.fydp.sci.grocerything.NetworkUtils.DeleteShoppingListAsyncTask;
 import com.fydp.sci.grocerything.NetworkUtils.GetShoppingListsAsyncTask;
 import com.fydp.sci.grocerything.NetworkUtils.NewShoppingListAsyncTask;
 
-import org.json.JSONArray;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +19,15 @@ public class Model {
         void failure(String reason);
     }
 
+    public interface ModelDeleteShoppingListListener
+    {
+        void success(String str, ShoppingList deletedList);
+        void failure(String reason);
+    }
+
     public interface ModelSaveShoppingListListener
     {
-        void success(String str);
+        void success(ShoppingList list);
         void failure(String reason);
     }
 
@@ -113,8 +110,8 @@ public class Model {
 
                 @Override
                 public void success(AbstractShoppingListAsyncTask task, Object obj) {
-                    String str = (String) obj;
-                    listener.success(str);
+                    ShoppingList list = (ShoppingList) obj;
+                    listener.success(list);
                     //TODO
                     //saveShoppingListGroceries(listener);
                 }
@@ -132,6 +129,32 @@ public class Model {
             //TODO
             //saveShoppingListGroceries(listener);
         }
+    }
+
+    public void deleteShoppingList(final ModelDeleteShoppingListListener listener, ShoppingList shopList)
+    {
+
+        final ShoppingList savedList = shopList;
+        DeleteShoppingListAsyncTask task = new DeleteShoppingListAsyncTask();
+        task.setShoppingList(shopList);
+
+        task.addListener(new AbstractShoppingListAsyncTask.ShoppingListTaskListener() {
+
+            @Override
+            public void success(AbstractShoppingListAsyncTask task, Object obj) {
+                String str = (String) obj;
+                listener.success(str, savedList);
+                //TODO
+                //saveShoppingListGroceries(listener);
+            }
+
+            @Override
+            public void failure(AbstractShoppingListAsyncTask task, String reason) {
+                listener.failure(reason);
+            }
+        });
+
+        task.execute();
     }
 
     /*

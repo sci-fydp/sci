@@ -23,6 +23,17 @@
         android:layout_marginLeft="10dp"
         />
 
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:id="@+id/full_shopping_list_delete_button"
+        android:layout_toLeftOf="@+id/full_shopping_list_row_arrow"
+        android:layout_toEndOf="@id/full_shopping_list_row_text"
+        android:layout_toRightOf="@id/full_shopping_list_row_text"/>
+
     <ImageView
         android:layout_width="20dp"
         android:layout_height="match_parent"
@@ -30,7 +41,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:layout_marginRight="10dp"
-        android:id="@+id/full_shopping_list_row_arrow"
+        android:id="@id/full_shopping_list_row_arrow"
         android:src = "@drawable/right_arrow"
         android:layout_centerVertical="true"
         android:layout_alignParentRight = "true"/>

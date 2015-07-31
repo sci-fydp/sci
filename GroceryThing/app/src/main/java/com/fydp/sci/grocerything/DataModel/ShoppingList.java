@@ -2,6 +2,7 @@ package com.fydp.sci.grocerything.DataModel;
 
 public class ShoppingList {
     private String name;
+
     private int id;
 
     public ShoppingList(String name, int id) {
@@ -18,4 +19,14 @@ public class ShoppingList {
     public void setName(String name) {
         this.name = name;
     }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 }

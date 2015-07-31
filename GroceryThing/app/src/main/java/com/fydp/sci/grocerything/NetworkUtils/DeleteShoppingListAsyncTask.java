@@ -6,31 +6,32 @@ import com.fydp.sci.grocerything.JSONHelper;
 import org.json.JSONObject;
 
 //TODO inprogress.
-public class NewShoppingListAsyncTask extends AbstractShoppingListAsyncTask {
+public class DeleteShoppingListAsyncTask extends AbstractShoppingListAsyncTask {
 
-    private String listName = "GenericListName";
-    public void setShoppingTitleName(String s)
+    private ShoppingList shopList;
+    public void setShoppingList(ShoppingList list)
     {
-        listName = s;
+        this.shopList = list;
     }
     @Override
     protected String getUrlTail() {
-        return "/user/saveShoppingList";
+        return "/user/deleteShoppingList";
     }
 
     @Override
     protected JSONObject getJSONParams() {
-        return JSONHelper.generateSaveShoppingListsJSON(listName);
+        return JSONHelper.generateDeleteShoppingListsJSON(shopList.getId());
     }
 
     @Override
     protected Object processResponse(String response) {
-        ShoppingList list = JSONHelper.parseShoppingList(response);
-        return list;
+        //Parse result
+        //TODO
+        return null;
     }
 
     @Override
     protected String processFailure(String response) {
-        return "Error: SaveShoppingList";
+        return "Error: DeleteShoppingList";
     }
 }

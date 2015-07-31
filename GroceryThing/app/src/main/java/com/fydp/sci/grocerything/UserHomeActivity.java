@@ -33,11 +33,11 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class UserHomeActivity extends Activity implements Model.ModelGetShoppingListListener {
+public class UserHomeActivity extends Activity implements Model.ModelGetShoppingListListener, Model.ModelDeleteShoppingListListener {
     ListView historyListView;
-    ArrayList<ShoppingList> shoppingListNames;
+    ArrayList<ShoppingList> shoppingLists;
     StableArrayAdapter historyListAdapter;
-    Button newListButton;
+    Button newListButton, reloadListButton;
     ProgressDialog progressDialog;
     //Button viewListButton;
 
@@ -51,6 +51,20 @@ public class UserHomeActivity extends Activity implements Model.ModelGetShopping
 
     private void init()
     {
+        reloadListButton = (Button)findViewById(R.id.userHome_reloadListButton);
+        reloadListButton.setOnClickListener(new View.OnClickListener() {
+
+                                             @Override
+                                             public void onClick(View v) {
+
+                                                 progressDialog = ProgressDialog.show(UserHomeActivity.this, "Fetching Data",
+                                                         "Generic Processing Message", true);
+
+                                                 Model.getInstance().getUserShoppingLists(UserHomeActivity.this, false);
+                                             }
+                                         }
+
+        );
         newListButton = (Button)findViewById(R.id.userHome_newListButton);
         newListButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,16 +104,17 @@ public class UserHomeActivity extends Activity implements Model.ModelGetShopping
         });
 
 
-        shoppingListNames = new ArrayList<ShoppingList>();
+        shoppingLists = new ArrayList<ShoppingList>();
         progressDialog = ProgressDialog.show(UserHomeActivity.this, "Fetching Data",
                 "Generic Processing Message", true);
+
+        Model.getInstance().getUserShoppingLists(this, false);
         historyListView = (ListView)findViewById(R.id.userHome_savedList);
         historyListAdapter = new StableArrayAdapter(this,
-                R.layout.full_shopping_list_row, shoppingListNames);
+                R.layout.full_shopping_list_row, shoppingLists);
 
         historyListView.setAdapter(historyListAdapter);
 
-        Model.getInstance().getUserShoppingLists(this, false);
         /*
         viewListButton = (Button)findViewById(R.id.userHome_viewListButton);
         viewListButton.setOnClickListener(new View.OnClickListener() {
@@ -148,6 +163,15 @@ public class UserHomeActivity extends Activity implements Model.ModelGetShopping
                 viewHolder.checkboxImage=(CheckBox)convertView.findViewById(R.id.full_shopping_list_row_checkBox);
                 viewHolder.nameText=(TextView)convertView.findViewById(R.id.full_shopping_list_row_text);
                 viewHolder.nextImage=(ImageView)convertView.findViewById(R.id.full_shopping_list_row_arrow);
+                Button deleteButton = (Button) convertView.findViewById(R.id.full_shopping_list_delete_button);
+                final int slot = position;
+                deleteButton.setOnClickListener(new View.OnClickListener(){
+
+                    @Override
+                    public void onClick(View v) {
+                        Model.getInstance().deleteShoppingList(UserHomeActivity.this, shoppingLists.get(slot));
+                    }
+                });
 
              /*
                 viewHolder.downloadImageButton.setOnClickListener(new OnClickListener() {
@@ -174,7 +198,7 @@ public class UserHomeActivity extends Activity implements Model.ModelGetShopping
                 viewHolder= (ShoppingListViewHolder)convertView.getTag();
             }
 
-            viewHolder.nameText.setText(shoppingListNames.get(position).getName());
+            viewHolder.nameText.setText(shoppingLists.get(position).getName());
 
             return convertView;
 
@@ -190,11 +214,26 @@ public class UserHomeActivity extends Activity implements Model.ModelGetShopping
         public CheckBox checkboxImage;
     }
 
+
+    ///HMMM maybe i should've made this cleaner ..... lol.
     //Getting shopping list back.
     @Override
     public void success(ArrayList<ShoppingList> list, boolean wasCached) {
+
+       // historyListAdapter.clear();
+        shoppingLists.clear();
+        shoppingLists.addAll(list);
+        historyListAdapter.notifyDataSetChanged();
         progressDialog.dismiss();
-        shoppingListNames = list;
+    }
+
+    //Delete
+    @Override
+    public void success(String str, ShoppingList deleteList) {
+       // historyListAdapter.clear();
+        shoppingLists.remove(deleteList);
+        historyListAdapter.notifyDataSetChanged();
+        progressDialog.dismiss();
     }
 
     @Override

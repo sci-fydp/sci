@@ -3,6 +3,7 @@ package com.fydp.sci.grocerything.NetworkUtils;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.fydp.sci.grocerything.DataModel.ShoppingList;
 import com.fydp.sci.grocerything.JSONHelper;
 
 import org.json.JSONObject;
@@ -13,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 //TODO inprogress.
 public class GetShoppingListsAsyncTask extends AbstractShoppingListAsyncTask {
@@ -29,9 +31,9 @@ public class GetShoppingListsAsyncTask extends AbstractShoppingListAsyncTask {
 
     @Override
     protected Object processResponse(String response) {
-        //Parse result
-        //TODO
-        return null;
+        ArrayList<ShoppingList> lists = JSONHelper.parseAllShoppingLists(response);
+
+        return lists;
     }
 
     @Override

@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.fydp.sci.grocerything.DataModel.Grocery;
 import com.fydp.sci.grocerything.DataModel.Model;
 import com.fydp.sci.grocerything.DataModel.ShoppingList;
 import com.fydp.sci.grocerything.NetworkUtils.NetworkUtils;
@@ -266,7 +267,7 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
 
     //Model Response
     @Override
-    public void success(String str) {
+    public void success(ShoppingList list) {
         progressDialog.dismiss();
     }
 
