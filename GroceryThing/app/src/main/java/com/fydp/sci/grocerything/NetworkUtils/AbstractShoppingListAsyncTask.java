@@ -3,12 +3,7 @@ package com.fydp.sci.grocerything.NetworkUtils;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.fydp.sci.grocerything.DataModel.Model;
-import com.fydp.sci.grocerything.DataModel.UserSession;
-import com.fydp.sci.grocerything.JSONHelper;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -17,38 +12,33 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
-//TODO inprogress.
-public class AccRegistrationAsyncTask extends AsyncTask<Void, Void, String> {
+public abstract class AbstractShoppingListAsyncTask extends AsyncTask<Void, Void, Void> {
 
-    AccRegistrationListener listener = null;
-    String email;
-    String pass;
-    boolean success = false;
-    public interface AccRegistrationListener
+    protected ArrayList<ShoppingListTaskListener> listeners = new ArrayList<ShoppingListTaskListener>();
+    protected boolean success = false;
+    protected Object savedResult;
+
+    public interface ShoppingListTaskListener
     {
-        void registrationSuccess(String msg);
-        void registrationFailure(String reason);
+        void success(AbstractShoppingListAsyncTask task, Object obj);
+        void failure(AbstractShoppingListAsyncTask task, String reason);
     }
 
-    public void setListener (AccRegistrationListener l)
+    public void addListener (ShoppingListTaskListener l)
     {
-        listener = l;
+        listeners.add(l);
     }
-    public void setRegistrationDetails(String email, String pass)
-    {
-        this.email = email;
-        this.pass = pass;
-    }
+    abstract protected String getUrlTail();
+    abstract protected JSONObject getJSONParams();
     @Override
-    protected String doInBackground(Void... params) {
+    protected Void doInBackground(Void... params) {
 
         String ans = new String();
         HttpURLConnection urlConnection = null;
         try {
-            URL url = new URL(NetworkUtils.BASE_URL + "/user/register");
+            URL url = new URL(NetworkUtils.BASE_URL + getUrlTail());
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
@@ -58,31 +48,27 @@ public class AccRegistrationAsyncTask extends AsyncTask<Void, Void, String> {
             urlConnection.setRequestMethod("POST");
             urlConnection.connect();
 
-            JSONObject jsonParam = JSONHelper.generateRegistrationJSON(email,pass);
+            JSONObject jsonParam = getJSONParams();
             DataOutputStream printout = new DataOutputStream(urlConnection.getOutputStream ());
             byte[] data=jsonParam.toString().getBytes("UTF-8");
             printout.write(data);
             printout.flush();
             printout.close();
 
-            StringBuilder sb = new StringBuilder();
             int HttpResult =urlConnection.getResponseCode();
             if(HttpResult ==HttpURLConnection.HTTP_OK)
             {
 
                 ans = readStream( urlConnection.getInputStream());
-                UserSession sessionObj = JSONHelper.parseUserLoginJSON(ans);
-                if (sessionObj == null)
-                {
-                    //???? error.
+                savedResult = processResponse(ans);
+                if (savedResult == null) {
+                    savedResult = processFailure(ans);
                 }
                 else
-                {
-                    Model.getInstance().loginSuccess(sessionObj);
                     success = true;
-                }
 
             }else{
+                processFailure(urlConnection.getResponseMessage());
                 System.out.println(urlConnection.getResponseMessage());
             }
         }
@@ -93,7 +79,7 @@ public class AccRegistrationAsyncTask extends AsyncTask<Void, Void, String> {
             if (urlConnection != null)
                 urlConnection.disconnect();
         }
-        return ans;
+        return null;
     }
 
     private String readStream(InputStream in) {
@@ -117,25 +103,24 @@ public class AccRegistrationAsyncTask extends AsyncTask<Void, Void, String> {
     }
 
     @Override
-    protected void onPostExecute(String result) {
-        if (listener != null)
+    protected void onPostExecute(Void result) {
+
+        for (ShoppingListTaskListener listener : listeners)
         {
             if (success) {
-                listener.registrationSuccess("good... good...");
+                listener.success(this, savedResult);
             }
             else
             {
-                if (result == null)
+                if (savedResult == null)
                 {
-                    result = "Something really went wrong";
+                    savedResult = "Something really went wrong";
                 }
-                listener.registrationFailure(result);
+                listener.failure(this, (String)savedResult);
             }
         }
-        else
-        {
-            Log.d("AccRegistrationTask", "wat..");            
-        }
-
     }
+
+    abstract protected Object processResponse(String response);
+    abstract protected String processFailure(String response);
 }

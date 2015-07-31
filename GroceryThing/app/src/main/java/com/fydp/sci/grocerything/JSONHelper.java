@@ -3,6 +3,10 @@ package com.fydp.sci.grocerything;
 
 import android.provider.Settings;
 
+import com.fydp.sci.grocerything.DataModel.Model;
+import com.fydp.sci.grocerything.DataModel.ShoppingList;
+import com.fydp.sci.grocerything.DataModel.UserSession;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,6 +24,16 @@ public class JSONHelper {
     public static final String JKEY_LOGIN_EMAIL = "email";
     public static final String JKEY_LOGIN_PASS = "password";
     public static final String JKEY_LOGIN_UNIQUE_ID = "udid";
+
+    public static final String JKEY_GET_SHOPPING_LISTS_KEY = "getShoppingLists";
+
+    public static final String JKEY_USER_ID = "user_id";
+    public static final String JKEY_USER_SESSION = "sessionStr";
+    public static final String JKEY_USER_OBJ_KEY = "user";
+    public static final String JKEY_SAVE_KEY = "save";
+    public static final String JKEY_DELETE_KEY = "delete";
+    public static final String JKEY_UPDATE_KEY = "update";
+    public static final String JKEY_SHOPPING_LIST_NAME_KEY = "name";
 
     public static  ArrayList<String> parseItemNames(JSONArray mainArray)
     {
@@ -82,5 +96,184 @@ public class JSONHelper {
 
         }
         return mainObj;
+    }
+
+    public static JSONObject generateGetShoppingListsJSON()
+    {
+        JSONObject getShopListObj = new JSONObject();
+        try
+        {
+            getShopListObj.put(JKEY_GET_SHOPPING_LISTS_KEY, getUserDataJSON());
+
+        }
+        catch(Exception e)
+        {
+
+        }
+        return getShopListObj;
+    }
+
+    public static JSONObject generateSaveShoppingListsJSON(String shopListName)
+    {
+        JSONObject saveShopListObj = new JSONObject();
+        try
+        {
+            JSONObject userObj = getUserDataJSON();
+            userObj.put(JKEY_SHOPPING_LIST_NAME_KEY, shopListName);
+            saveShopListObj.put(JKEY_SAVE_KEY, userObj);
+           // saveShopListObj.put(JKEY_SHOPPING_LIST_NAME_KEY, shopListName);
+
+        }
+        catch(Exception e)
+        {
+
+        }
+        return saveShopListObj;
+    }
+
+    public static JSONObject generateUpdateShoppingListsJSON(String shopListName, int shopListID)
+    {
+        JSONObject obj = new JSONObject();
+        try
+        {
+            obj.put(JKEY_UPDATE_KEY, getUserDataJSON());
+            obj.put("id", shopListID);
+            obj.put(JKEY_SHOPPING_LIST_NAME_KEY, shopListName);
+        }
+        catch(Exception e)
+        {
+
+        }
+        return obj;
+    }
+
+
+    public static JSONObject generateDeleteShoppingListsJSON(int shopListID)
+    {
+        JSONObject obj = new JSONObject();
+        try
+        {
+            JSONObject userObj = getUserDataJSON();
+            userObj.put("id", shopListID);
+            obj.put(JKEY_DELETE_KEY, userObj);
+        }
+        catch(Exception e)
+        {
+
+        }
+        return obj;
+    }
+
+
+    public static JSONObject generateSaveShoppingListItemJSON(int shopListID, int itemID, int locID, String name, String desc, double price)
+    {
+        JSONObject obj = new JSONObject();
+        try
+        {
+            obj.put(JKEY_SAVE_KEY, getUserDataJSON());
+            obj.put("id", shopListID);//TODO
+            obj.put("shopping_list_id",shopListID);
+            obj.put("item_id", itemID);
+            obj.put("location_id", locID);
+            obj.put("name", name);
+            obj.put("description", desc);
+            obj.put("price", price);
+
+        }
+        catch(Exception e)
+        {
+
+        }
+        return obj;
+    }
+
+    private static JSONObject getUserDataJSON ()
+    {
+        JSONObject obj = new JSONObject();
+        JSONObject userObj = new JSONObject();
+        try
+        {
+            obj.put(JKEY_USER_ID, Model.getInstance().getUserId());
+            obj.put(JKEY_USER_SESSION, Model.getInstance().getSessionKey());
+            userObj.put(JKEY_USER_OBJ_KEY, obj);
+        }
+        catch(Exception e)
+        {
+
+        }
+
+        return userObj;
+    }
+
+    public static UserSession parseUserLoginJSON(String jsonString)
+    {
+        UserSession session = null;
+        try
+        {
+            JSONObject obj = new JSONObject(jsonString);
+            String sessionRef = obj.getString(JKEY_USER_SESSION);
+            int intRef = obj.getInt("id");
+
+            session = new UserSession(sessionRef, intRef);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+
+        return session;
+    }
+
+    public static ShoppingList parseShoppingList(String jsonString)
+    {
+        try {
+            JSONObject obj = new JSONObject(jsonString);
+            return parseShoppingList(obj);
+        }
+        catch (Exception e)
+        {
+
+        }
+        return null;
+    }
+
+    public static ArrayList<ShoppingList> parseAllShoppingLists(String response) {
+        try
+        {
+            ArrayList<ShoppingList> lists = new ArrayList<ShoppingList>();
+
+            JSONArray jListArray = new JSONArray(response);
+            for (int i = 0; i < jListArray.length(); i++)
+            {
+                JSONObject shopListObj = jListArray.getJSONObject(i);
+                ShoppingList list = parseShoppingList(shopListObj);
+                lists.add(list);
+            }
+            return lists;
+        }
+        catch (Exception e) {
+
+        }
+        return null;
+    }
+
+    private static ShoppingList parseShoppingList(JSONObject shopListObj)
+    {
+        ShoppingList shoppingList = null;
+        try
+        {
+            String name = shopListObj.getString("name");
+            int id = shopListObj.getInt("id");
+
+            shoppingList = new ShoppingList(name, id);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+
+        return shoppingList;
     }
 }

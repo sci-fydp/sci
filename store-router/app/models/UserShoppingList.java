@@ -1,10 +1,12 @@
 package models;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 
 import models.base.DatedModel;
 import play.db.ebean.Model;
 
+@Entity
 public class UserShoppingList extends DatedModel {
 
 	private static final long serialVersionUID = 1L;

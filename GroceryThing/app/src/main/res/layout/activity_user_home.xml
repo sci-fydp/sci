@@ -15,6 +15,14 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ReloadList"
+        android:id="@+id/userHome_reloadListButton"
+        android:layout_below="@id/userHome_newListButton"
+        android:layout_centerHorizontal="true" />
+
     <!--
     <Button
         android:layout_width="wrap_content"
@@ -25,11 +33,11 @@
 -->
     <ListView
 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="viewlist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:id="@+id/userHome_savedList"
-        android:layout_below="@id/userHome_newListButton">
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/userHome_reloadListButton">
     </ListView>
 
 </RelativeLayout>

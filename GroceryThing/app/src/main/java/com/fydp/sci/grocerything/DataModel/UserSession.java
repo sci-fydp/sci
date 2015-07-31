@@ -3,13 +3,22 @@ package com.fydp.sci.grocerything.DataModel;
 
 public class UserSession {
 
-    public UserSession(String session)
+    public UserSession(String session, int userId)
     {
         sessionKey = session;
+        this.userId = userId;
     }
 
     private String sessionKey;
-    private String username;
+    private int userId;
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
     public String getSessionKey() {
         return sessionKey;
@@ -19,11 +28,4 @@ public class UserSession {
         this.sessionKey = sessionKey;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 }

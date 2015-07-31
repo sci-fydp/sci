@@ -2,12 +2,14 @@ package com.fydp.sci.grocerything;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.fydp.sci.grocerything.DataModel.Model;
 import com.fydp.sci.grocerything.NetworkUtils.AccRegistrationAsyncTask;
 import com.fydp.sci.grocerything.NetworkUtils.NetworkUtils;
 
@@ -57,12 +59,14 @@ public class RegisterActivity extends Activity implements AccRegistrationAsyncTa
 
     //AccRegistrationListener
 
-    public void registrationSuccess(String session)
+    public void registrationSuccess(String msg)
     {
         progressDialog.dismiss();
-        Toast.makeText(this, "Success", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Success " + msg, Toast.LENGTH_LONG).show();
         //TODO register to model. ? or not
         finish();
+        Intent intent = new Intent(RegisterActivity.this, UserHomeActivity.class);
+        startActivity(intent);
     }
     public void registrationFailure(String reason)
     {
