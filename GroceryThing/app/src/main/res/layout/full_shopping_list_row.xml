@@ -10,7 +10,8 @@
         android:id="@+id/full_shopping_list_row_checkBox"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="1dp"/>
+        android:layout_marginLeft="1dp"
+        android:focusable="false"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -32,7 +33,8 @@
         android:id="@+id/full_shopping_list_delete_button"
         android:layout_toLeftOf="@+id/full_shopping_list_row_arrow"
         android:layout_toEndOf="@id/full_shopping_list_row_text"
-        android:layout_toRightOf="@id/full_shopping_list_row_text"/>
+        android:layout_toRightOf="@id/full_shopping_list_row_text"
+        android:focusable="false"/>
 
     <ImageView
         android:layout_width="20dp"

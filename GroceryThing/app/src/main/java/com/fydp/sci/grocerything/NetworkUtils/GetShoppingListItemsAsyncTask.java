@@ -1,42 +1,36 @@
 package com.fydp.sci.grocerything.NetworkUtils;
 
-import com.fydp.sci.grocerything.DataModel.Grocery;
 import com.fydp.sci.grocerything.DataModel.Purchase;
 import com.fydp.sci.grocerything.DataModel.ShoppingList;
 import com.fydp.sci.grocerything.JSONHelper;
 
 import org.json.JSONObject;
 
-import java.util.List;
+import java.util.ArrayList;
 
 //TODO inprogress.
+public class GetShoppingListItemsAsyncTask extends AbstractShoppingListAsyncTask {
 
-//OK i'm just going to make this do everything nvm, too hard
-public class SaveShoppingListItemAsyncTask extends AbstractShoppingListAsyncTask {
-
-    Purchase purchase;
     ShoppingList shopList;
     @Override
     protected String getUrlTail() {
-        return "/user/saveShoppingListItem";
+        return "/user/getShoppingListItems";
     }
 
-    public void setParams(ShoppingList shopList, Purchase purchase)
+    public void setParams(ShoppingList shopList)
     {
         this.shopList = shopList;
-        this.purchase = purchase;
-        //TODO
     }
+
     @Override
     protected JSONObject getJSONParams() {
-        return JSONHelper.generateSaveShoppingListItemJSON(shopList, purchase);
-        //TODO
+        return JSONHelper.generateGetShoppingListItemsJSON(shopList);
     }
 
     @Override
     protected Object processResponse(String response) {
-        //Parse result
-        //TODO
+        
+        //TODO PARSE JSON  of user shopping items!
         return null;
     }
 

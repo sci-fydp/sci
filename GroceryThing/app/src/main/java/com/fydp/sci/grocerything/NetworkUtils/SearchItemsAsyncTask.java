@@ -3,6 +3,7 @@ package com.fydp.sci.grocerything.NetworkUtils;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.fydp.sci.grocerything.DataModel.Grocery;
 import com.fydp.sci.grocerything.JSONHelper;
 
 import org.json.JSONArray;
@@ -14,14 +15,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class SearchItemsAsyncTask extends AsyncTask<Void, Void, ArrayList<String>> {
+public class SearchItemsAsyncTask extends AsyncTask<Void, Void, ArrayList<Grocery>> {
 
     String likeStr;
     int tag;
     SearchListener listener;
     public interface SearchListener
     {
-        void searchComplete(ArrayList<String> similarStrs,int tag);
+        void searchComplete(ArrayList<Grocery> similarStrs,int tag);
     }
 
 
@@ -37,9 +38,9 @@ public class SearchItemsAsyncTask extends AsyncTask<Void, Void, ArrayList<String
     }
 
     @Override
-    protected ArrayList<String> doInBackground(Void... params) {
+    protected ArrayList<Grocery> doInBackground(Void... params) {
 
-        ArrayList<String> ans = new ArrayList<String>();
+        ArrayList<Grocery> ans = new ArrayList<Grocery>();
         HttpURLConnection urlConnection = null;
         try {
             URL url = new URL("http://10.0.3.2:9000/search" + "?s=" + likeStr);
@@ -47,8 +48,7 @@ public class SearchItemsAsyncTask extends AsyncTask<Void, Void, ArrayList<String
             // urlConnection.setRequestMethod("GET");
             String jsonString = readStream(urlConnection.getInputStream());
             JSONArray mainObj = new JSONArray(jsonString);
-            ans = JSONHelper.parseItemNames(mainObj);
-            Log.d("EHH", "EHEHEH");
+            ans = JSONHelper.parseGroceryItems(mainObj);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -57,7 +57,6 @@ public class SearchItemsAsyncTask extends AsyncTask<Void, Void, ArrayList<String
             if (urlConnection != null)
                 urlConnection.disconnect();
         }
-        Log.d("EHH", "WHY ARE WE DONE");
         return ans;
 //            return returned;
     }
@@ -83,7 +82,7 @@ public class SearchItemsAsyncTask extends AsyncTask<Void, Void, ArrayList<String
     }
 
     @Override
-    protected void onPostExecute(ArrayList<String> result) {
+    protected void onPostExecute(ArrayList<Grocery> result) {
 
         listener.searchComplete(result, tag);
     }

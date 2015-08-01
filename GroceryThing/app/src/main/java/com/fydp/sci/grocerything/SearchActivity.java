@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.fydp.sci.grocerything.DataModel.Grocery;
 import com.fydp.sci.grocerything.DataModel.Model;
+import com.fydp.sci.grocerything.DataModel.Purchase;
 import com.fydp.sci.grocerything.DataModel.ShoppingList;
 import com.fydp.sci.grocerything.NetworkUtils.NetworkUtils;
 import com.fydp.sci.grocerything.NetworkUtils.SearchItemsAsyncTask;
@@ -36,31 +37,49 @@ import java.util.List;
 
 public class SearchActivity extends Activity implements SearchItemsAsyncTask.SearchListener, Model.ModelSaveShoppingListListener {
     ListView groceryListView;
-    ArrayList<Grocery> groceries;
+    ShoppingList theShoppingList;
+    ArrayList<Purchase> purchases;
     StableArrayAdapter groceryListAdapter;
     AutoCompleteTextView searchTextView;
     RelativeLayout mainLayout;
-    ArrayAdapter<String> groceryNameAdapter;
+    ArrayAdapter<Grocery> groceryNameAdapter;
 
     private static final String SHOPPING_LIST_NAME_KEY = "LISTNAMEKEY";
     private static final String NEW_SHOPPING_LIST_KEY = "NEWKEY";
     private static final int SEARCH_DROP_DOWN_HEIGHT = 200;
     int searchTerrorTag = 0; // this is terror.
-    HashSet<String> savedStrings = new HashSet<String>();//Real terror.
+    HashSet<Grocery> savedGroceries = new HashSet<Grocery>();//Real terror.
     private String shoppingListName;
     private boolean isNew;
     private ProgressDialog progressDialog;
 
     //TODO STICK EXISTING GROCERIES IN?.... OR VIA MODEL..... hmm.....
-    public static Intent createIntent(Context context, String name, boolean isNew, List<Grocery> groceries)
+    public static Intent createIntent(Context context, String name)
     {
         Intent intent = new Intent(context, SearchActivity.class);
         Bundle b = new Bundle();
-        b.putBoolean(NEW_SHOPPING_LIST_KEY, isNew);
+        b.putBoolean(NEW_SHOPPING_LIST_KEY, true);
         b.putString(SHOPPING_LIST_NAME_KEY, name);
         intent.putExtras(b);
         return intent;
     }
+
+    public static Intent createIntent(Context context, ShoppingList list, ArrayList<Purchase> purchases)
+    {
+        //FIXME
+        //Yea so uh.... i dont remember how to pass these special objs as bundles.... something about creatorstuff, so temporary hack here.
+
+        Intent intent = new Intent(context, SearchActivity.class);
+        Bundle b = new Bundle();
+        b.putBoolean(NEW_SHOPPING_LIST_KEY, false);
+        b.putString(SHOPPING_LIST_NAME_KEY, list.getName());
+        intent.putExtras(b);
+
+        Model.getInstance().FIXMEHack(list, purchases);
+
+        return intent;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,20 +90,25 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
         this.shoppingListName = b.getString(SHOPPING_LIST_NAME_KEY);
         this.isNew = b.getBoolean(NEW_SHOPPING_LIST_KEY);
 
+        purchases = new ArrayList<Purchase>();
+        if (!isNew)
+        {
+            theShoppingList = Model.getInstance().FIXMEList();
+            purchases.addAll(Model.getInstance().FIXMEPurchase());
+        }
 
         setTitle(shoppingListName);
         init();
-        createRandomData();
         groceryListAdapter = new StableArrayAdapter(this,
-                R.layout.shopping_list_row, groceries);
+                R.layout.shopping_list_row, purchases);
 
         groceryListView.setAdapter(groceryListAdapter);
         mainLayout = (RelativeLayout) findViewById(R.id.search_mainLayout);
 
 
         //final ArrayList<String> groceryNames = getGroceryNames();
-        groceryNameAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+        groceryNameAdapter = new ArrayAdapter<Grocery>(this,
+                android.R.layout.simple_dropdown_item_1line, new ArrayList<Grocery>());
 
 
         searchTextView.setAdapter(groceryNameAdapter);
@@ -93,8 +117,8 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long rowId) {
-                String selection = (String) parent.getItemAtPosition(position);
-                groceries.add(new Grocery(selection));
+                Grocery selection = (Grocery) parent.getItemAtPosition(position);
+                purchases.add(new Purchase(selection));
                 groceryListAdapter.notifyDataSetChanged();
                 Log.d("SEARCHACITITY", "SELECTED! " + selection);
                 searchTextView.setText("");
@@ -120,7 +144,8 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
             public void afterTextChanged(Editable s) {
                 String str = s.toString();
                 searchTerrorTag++;
-                if (str.length() >= 3)
+                //FIXME lets test only on 3.
+                if (str.trim().length() == 3)
                 {
                     NetworkUtils.getInstance().findGroceryNames(str, searchTerrorTag, SearchActivity.this);
                 }
@@ -135,31 +160,16 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
         searchTextView = (AutoCompleteTextView)findViewById(R.id.search_groceryInput);
     }
 
-    private void createRandomData() {
-        groceries = new ArrayList<Grocery>();
-        groceries.add(new Grocery("TestGrocery"));
-    }
 
+    private class StableArrayAdapter extends ArrayAdapter<Purchase> {
 
-
-
-    private class StableArrayAdapter extends ArrayAdapter<Grocery> {
-
-        HashMap<Grocery, Integer> mIdMap = new HashMap<Grocery, Integer>();
 
         public StableArrayAdapter(Context context, int textViewResourceId,
-                                  List<Grocery> objects) {
+                                  List<Purchase> objects) {
             super(context, textViewResourceId, objects);
-            for (int i = 0; i < objects.size(); ++i) {
-                mIdMap.put(objects.get(i), i);
-            }
+
         }
 
-        @Override
-        public long getItemId(int position) {
-            Grocery item = getItem(position);
-            return mIdMap.get(item);
-        }
         public View getView(int position, View convertView, ViewGroup parent) {
 
             // View rowView = convertView;
@@ -204,7 +214,7 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
                 viewHolder= (ShoppingListViewHolder)convertView.getTag();
             }
 
-            viewHolder.nameText.setText(groceries.get(position).name);
+            viewHolder.nameText.setText(purchases.get(position).getName());
 
             return convertView;
 
@@ -246,13 +256,14 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
 
     //Search Async task
     @Override
-    public void searchComplete(ArrayList<String> similarStrs, int tag) {
-        if (searchTerrorTag == tag && similarStrs != null)
+    public void searchComplete(ArrayList<Grocery> newGroceries, int tag) {
+        //searchTerrorTag == tag &&
+        if (newGroceries != null)
         {
             //Apparently dupes will appear. if not a set.
-            savedStrings.addAll(similarStrs);
+            savedGroceries.addAll(newGroceries);
             groceryNameAdapter.clear();
-            groceryNameAdapter.addAll(savedStrings);
+            groceryNameAdapter.addAll(savedGroceries);
 
             groceryNameAdapter.notifyDataSetChanged();
         }
@@ -262,13 +273,21 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
     {
         progressDialog = ProgressDialog.show(SearchActivity.this, "Saving",
                 "Generic Saving Message", true);
-        Model.getInstance().saveShoppingList(this, shoppingListName, isNew, new ArrayList<Grocery>());
+
+        //hmm...... do i really need that number lol.
+        theShoppingList = new ShoppingList(shoppingListName, 3589083);
+        Model.getInstance().saveShoppingList(this, theShoppingList, isNew, purchases);
     }
 
     //Model Response
     @Override
     public void success(ShoppingList list) {
         progressDialog.dismiss();
+        theShoppingList = list;
+        isNew = false;
+
+        Bundle b = getIntent().getExtras();
+        b.putBoolean(NEW_SHOPPING_LIST_KEY, false);
     }
 
     @Override

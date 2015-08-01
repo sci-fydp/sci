@@ -3,7 +3,9 @@ package com.fydp.sci.grocerything;
 
 import android.provider.Settings;
 
+import com.fydp.sci.grocerything.DataModel.Grocery;
 import com.fydp.sci.grocerything.DataModel.Model;
+import com.fydp.sci.grocerything.DataModel.Purchase;
 import com.fydp.sci.grocerything.DataModel.ShoppingList;
 import com.fydp.sci.grocerything.DataModel.UserSession;
 
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 
 public class JSONHelper {
     public static final String JKEY_ITEM_NAME = "name";
+    public static final String JKEY_ITEM_ID = "id";
     public static final String JKEY_REGISTER = "register";
     public static final String JKEY_REGISTER_EMAIL = "email";
     public static final String JKEY_REGISTER_PASS = "password";
@@ -35,14 +38,19 @@ public class JSONHelper {
     public static final String JKEY_UPDATE_KEY = "update";
     public static final String JKEY_SHOPPING_LIST_NAME_KEY = "name";
 
-    public static  ArrayList<String> parseItemNames(JSONArray mainArray)
+    public static  ArrayList<Grocery> parseGroceryItems(JSONArray mainArray)
     {
-        ArrayList<String> strs = new ArrayList<String>();
+        ArrayList<Grocery> groceries = new ArrayList<Grocery>();
         try {
             for (int i = 0; i < mainArray.length(); i++) {
+
                 JSONObject itemObj = mainArray.getJSONObject(i);
                 String name = itemObj.getString(JSONHelper.JKEY_ITEM_NAME);
-                strs.add(name);
+                int id = itemObj.getInt(JSONHelper.JKEY_ITEM_ID);
+                String desc = itemObj.getString("description");
+                //strs.add(name);
+                Grocery grocery = new Grocery(name, id, desc);
+                groceries.add(grocery);
             }
         }
         catch (JSONException e)
@@ -50,7 +58,7 @@ public class JSONHelper {
             e.printStackTrace();
         }
 
-        return strs;
+        return groceries;
     }
 
     public static JSONObject generateRegistrationJSON(String email, String password)
@@ -165,26 +173,29 @@ public class JSONHelper {
     }
 
 
-    public static JSONObject generateSaveShoppingListItemJSON(int shopListID, int itemID, int locID, String name, String desc, double price)
+    public static JSONObject generateSaveShoppingListItemJSON(ShoppingList shopList, Purchase purchase)
     {
-        JSONObject obj = new JSONObject();
+        JSONObject mainObj = new JSONObject();
         try
         {
-            obj.put(JKEY_SAVE_KEY, getUserDataJSON());
-            obj.put("id", shopListID);//TODO
-            obj.put("shopping_list_id",shopListID);
-            obj.put("item_id", itemID);
-            obj.put("location_id", locID);
-            obj.put("name", name);
-            obj.put("description", desc);
-            obj.put("price", price);
+            JSONObject obj = getUserDataJSON();
+
+
+            obj.put("shopping_list_id", shopList.getId());
+            obj.put("item_id", purchase.getId());
+            obj.put("location_id", 5); //TODO FIXME ????????????????
+            obj.put("name", purchase.getName());
+            obj.put("description", purchase.getDescription());
+            obj.put("price", purchase.getPrice());
+
+            mainObj.put(JKEY_SAVE_KEY, obj);
 
         }
         catch(Exception e)
         {
 
         }
-        return obj;
+        return mainObj;
     }
 
     private static JSONObject getUserDataJSON ()
@@ -275,5 +286,21 @@ public class JSONHelper {
 
 
         return shoppingList;
+    }
+
+    public static JSONObject generateGetShoppingListItemsJSON(ShoppingList l)
+    {
+        JSONObject obj = new JSONObject();
+        try
+        {
+            JSONObject userObj = getUserDataJSON();
+            userObj.put("shopping_list_id", l.getId());
+            obj.put("get", userObj);
+        }
+        catch(Exception e)
+        {
+
+        }
+        return obj;
     }
 }

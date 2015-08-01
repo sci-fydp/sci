@@ -5,13 +5,22 @@ import android.util.Log;
 
 import com.fydp.sci.grocerything.NetworkUtils.AbstractShoppingListAsyncTask;
 import com.fydp.sci.grocerything.NetworkUtils.DeleteShoppingListAsyncTask;
+import com.fydp.sci.grocerything.NetworkUtils.GetShoppingListItemsAsyncTask;
 import com.fydp.sci.grocerything.NetworkUtils.GetShoppingListsAsyncTask;
 import com.fydp.sci.grocerything.NetworkUtils.NewShoppingListAsyncTask;
+import com.fydp.sci.grocerything.NetworkUtils.SaveShoppingListItemAsyncTask;
+import com.fydp.sci.grocerything.UserHomeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Model {
+
+    public interface ModelGetShoppingListItemsListener
+    {
+        void success(ArrayList<Purchase> purchases, ShoppingList list);
+        void failure(String reason);
+    }
 
     public interface ModelGetShoppingListListener
     {
@@ -100,20 +109,26 @@ public class Model {
         }
     }
 
-    public void saveShoppingList(final ModelSaveShoppingListListener listener, String name, boolean isNew, List<Grocery> groceries)
+    public void saveShoppingList(final ModelSaveShoppingListListener listener, ShoppingList shopList, boolean isNew, List<Purchase> purchases)
     {
+        final List<Purchase> savePurchases = purchases;
         if (isNew)
         {
             NewShoppingListAsyncTask task = new NewShoppingListAsyncTask();
-            task.setShoppingTitleName(name);
+            task.setShoppingTitleName(shopList.getName());
             task.addListener(new AbstractShoppingListAsyncTask.ShoppingListTaskListener() {
 
                 @Override
                 public void success(AbstractShoppingListAsyncTask task, Object obj) {
                     ShoppingList list = (ShoppingList) obj;
-                    listener.success(list);
-                    //TODO
-                    //saveShoppingListGroceries(listener);
+                    if (savePurchases.size() == 0)
+                    {
+                        listener.success(list);
+                    }
+                    else
+                    {
+                        saveShoppingListGroceries(listener, list, savePurchases);
+                    }
                 }
 
                 @Override
@@ -127,7 +142,7 @@ public class Model {
         else
         {
             //TODO
-            //saveShoppingListGroceries(listener);
+            saveShoppingListGroceries(listener, shopList, savePurchases);
         }
     }
 
@@ -157,18 +172,22 @@ public class Model {
         task.execute();
     }
 
-    /*
-    private void saveShoppingListGroceries(final ModelSaveShoppingListListener listener, String name, int id, List<Grocery> groceries)
+
+    private void saveShoppingListGroceries(final ModelSaveShoppingListListener listener, ShoppingList list, List<Purchase> purchases)
     {
-        //TODO
-            NewShoppingListAsyncTask task = new NewShoppingListAsyncTask();
-            task.setShoppingTitleName(name);
+
+        final ShoppingList savedList = list;
+        for (Purchase purchase : purchases)
+        {
+            SaveShoppingListItemAsyncTask task = new SaveShoppingListItemAsyncTask();
+
+            task.setParams(list, purchase);
             task.addListener(new AbstractShoppingListAsyncTask.ShoppingListTaskListener() {
 
                 @Override
                 public void success(AbstractShoppingListAsyncTask task, Object obj) {
-                    String str = (String) obj;
-                    listener.success(str);
+                    //String str = (String) obj;
+                    listener.success(savedList);
                 }
 
                 @Override
@@ -178,6 +197,49 @@ public class Model {
             });
 
             task.execute();
+        }
+    }
 
-    }*/
+    public void getShoppingListItems(final ModelGetShoppingListItemsListener listener, final ShoppingList list) {
+
+
+        GetShoppingListItemsAsyncTask task = new GetShoppingListItemsAsyncTask();
+        task.setParams(list);
+
+        task.addListener(new AbstractShoppingListAsyncTask.ShoppingListTaskListener() {
+
+            @Override
+            public void success(AbstractShoppingListAsyncTask task, Object obj) {
+                ArrayList<Purchase> purchases = (ArrayList<Purchase>) obj;
+                listener.success(purchases, list);
+
+            }
+
+            @Override
+            public void failure(AbstractShoppingListAsyncTask task, String reason) {
+                listener.failure(reason);
+            }
+        });
+
+        task.execute();
+    }
+
+    ShoppingList list;
+    List<Purchase> purchases;
+    public void FIXMEHack(ShoppingList list, List<Purchase> purchases)
+    {
+        this.list = list;
+        this.purchases = purchases;
+    }
+
+    public List<Purchase> FIXMEPurchase()
+    {
+        return purchases;
+    }
+
+    public ShoppingList FIXMEList()
+    {
+        return list;
+    }
+
 }

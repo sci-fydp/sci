@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fydp.sci.grocerything.DataModel.Model;
+import com.fydp.sci.grocerything.DataModel.Purchase;
 import com.fydp.sci.grocerything.DataModel.ShoppingList;
 import com.fydp.sci.grocerything.NetworkUtils.GetShoppingListsAsyncTask;
 
@@ -33,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class UserHomeActivity extends Activity implements Model.ModelGetShoppingListListener, Model.ModelDeleteShoppingListListener {
+public class UserHomeActivity extends Activity implements Model.ModelGetShoppingListListener, Model.ModelDeleteShoppingListListener, Model.ModelGetShoppingListItemsListener {
     ListView historyListView;
     ArrayList<ShoppingList> shoppingLists;
     StableArrayAdapter historyListAdapter;
@@ -82,7 +84,7 @@ public class UserHomeActivity extends Activity implements Model.ModelGetShopping
                     public void onClick(DialogInterface dialog, int which) {
 
                         //TODO PASS groceries in.
-                        Intent intent = SearchActivity.createIntent(UserHomeActivity.this, input.getText().toString(), true, null);
+                        Intent intent = SearchActivity.createIntent(UserHomeActivity.this, input.getText().toString());
                         finish();
                         startActivity(intent);
                     }
@@ -115,6 +117,19 @@ public class UserHomeActivity extends Activity implements Model.ModelGetShopping
 
         historyListView.setAdapter(historyListAdapter);
 
+        historyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                ShoppingList list = shoppingLists.get(position);
+                progressDialog = ProgressDialog.show(UserHomeActivity.this, "Fetching list",
+                        "Generic Processing Message", true);
+
+                Model.getInstance().getShoppingListItems(UserHomeActivity.this, list);
+
+            }
+        });
+
         /*
         viewListButton = (Button)findViewById(R.id.userHome_viewListButton);
         viewListButton.setOnClickListener(new View.OnClickListener() {
@@ -130,21 +145,12 @@ public class UserHomeActivity extends Activity implements Model.ModelGetShopping
 
     private class StableArrayAdapter extends ArrayAdapter<ShoppingList> {
 
-        HashMap<ShoppingList, Integer> mIdMap = new HashMap<ShoppingList, Integer>();
 
         public StableArrayAdapter(Context context, int textViewResourceId,
                                   List<ShoppingList> objects) {
             super(context, textViewResourceId, objects);
-            for (int i = 0; i < objects.size(); ++i) {
-                mIdMap.put(objects.get(i), i);
-            }
         }
 
-        @Override
-        public long getItemId(int position) {
-            ShoppingList item = getItem(position);
-            return mIdMap.get(item);
-        }
         public View getView(int position, View convertView, ViewGroup parent) {
 
             // View rowView = convertView;
@@ -234,6 +240,15 @@ public class UserHomeActivity extends Activity implements Model.ModelGetShopping
         shoppingLists.remove(deleteList);
         historyListAdapter.notifyDataSetChanged();
         progressDialog.dismiss();
+    }
+
+    @Override
+    public void success(ArrayList<Purchase> purchases, ShoppingList list) {
+        progressDialog.dismiss();
+        //TODO PASS groceries in.
+        Intent intent = SearchActivity.createIntent(UserHomeActivity.this, list, purchases);
+        finish();
+        startActivity(intent);
     }
 
     @Override
