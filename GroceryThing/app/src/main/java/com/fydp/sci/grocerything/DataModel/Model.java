@@ -177,27 +177,26 @@ public class Model {
     {
 
         final ShoppingList savedList = list;
-        for (Purchase purchase : purchases)
-        {
-            SaveShoppingListItemAsyncTask task = new SaveShoppingListItemAsyncTask();
 
-            task.setParams(list, purchase);
-            task.addListener(new AbstractShoppingListAsyncTask.ShoppingListTaskListener() {
+        SaveShoppingListItemAsyncTask task = new SaveShoppingListItemAsyncTask();
 
-                @Override
-                public void success(AbstractShoppingListAsyncTask task, Object obj) {
-                    //String str = (String) obj;
-                    listener.success(savedList);
-                }
+        task.setParams(list, purchases);
+        task.addListener(new AbstractShoppingListAsyncTask.ShoppingListTaskListener() {
 
-                @Override
-                public void failure(AbstractShoppingListAsyncTask task, String reason) {
-                    listener.failure(reason);
-                }
-            });
+            @Override
+            public void success(AbstractShoppingListAsyncTask task, Object obj) {
+                //String str = (String) obj;
+                listener.success(savedList);
+            }
 
-            task.execute();
-        }
+            @Override
+            public void failure(AbstractShoppingListAsyncTask task, String reason) {
+                listener.failure(reason);
+            }
+        });
+
+        task.execute();
+
     }
 
     public void getShoppingListItems(final ModelGetShoppingListItemsListener listener, final ShoppingList list) {

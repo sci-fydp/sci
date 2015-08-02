@@ -31,6 +31,6 @@ public class NewShoppingListAsyncTask extends AbstractShoppingListAsyncTask {
 
     @Override
     protected String processFailure(String response) {
-        return "Error: SaveShoppingList";
+        return "Error: NewShoppingList";
     }
 }

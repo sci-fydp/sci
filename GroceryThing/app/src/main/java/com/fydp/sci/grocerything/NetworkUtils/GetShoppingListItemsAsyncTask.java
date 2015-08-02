@@ -7,6 +7,7 @@ import com.fydp.sci.grocerything.JSONHelper;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 //TODO inprogress.
 public class GetShoppingListItemsAsyncTask extends AbstractShoppingListAsyncTask {
@@ -29,13 +30,14 @@ public class GetShoppingListItemsAsyncTask extends AbstractShoppingListAsyncTask
 
     @Override
     protected Object processResponse(String response) {
-        
+
         //TODO PARSE JSON  of user shopping items!
-        return null;
+        List<Purchase> purchases = JSONHelper.parseShoppingListPurchases(response);
+        return purchases;
     }
 
     @Override
     protected String processFailure(String response) {
-        return "Error: GetShoppingList";
+        return "Error: GetShoppingListItems";
     }
 }

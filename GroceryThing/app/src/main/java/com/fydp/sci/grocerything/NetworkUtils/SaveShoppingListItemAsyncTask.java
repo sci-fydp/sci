@@ -14,22 +14,22 @@ import java.util.List;
 //OK i'm just going to make this do everything nvm, too hard
 public class SaveShoppingListItemAsyncTask extends AbstractShoppingListAsyncTask {
 
-    Purchase purchase;
+    List<Purchase> purchases;
     ShoppingList shopList;
     @Override
     protected String getUrlTail() {
-        return "/user/saveShoppingListItem";
+        return "/user/saveShoppingListItems";
     }
 
-    public void setParams(ShoppingList shopList, Purchase purchase)
+    public void setParams(ShoppingList shopList, List<Purchase> purchases)
     {
         this.shopList = shopList;
-        this.purchase = purchase;
+        this.purchases = purchases;
         //TODO
     }
     @Override
     protected JSONObject getJSONParams() {
-        return JSONHelper.generateSaveShoppingListItemJSON(shopList, purchase);
+        return JSONHelper.generateSaveShoppingListItemJSON(shopList, purchases);
         //TODO
     }
 
@@ -37,11 +37,11 @@ public class SaveShoppingListItemAsyncTask extends AbstractShoppingListAsyncTask
     protected Object processResponse(String response) {
         //Parse result
         //TODO
-        return null;
+        return response;
     }
 
     @Override
     protected String processFailure(String response) {
-        return "Error: GetShoppingList";
+        return "Error: SaveShoppingList";
     }
 }

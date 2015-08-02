@@ -247,7 +247,6 @@ public class UserHomeActivity extends Activity implements Model.ModelGetShopping
         progressDialog.dismiss();
         //TODO PASS groceries in.
         Intent intent = SearchActivity.createIntent(UserHomeActivity.this, list, purchases);
-        finish();
         startActivity(intent);
     }
 

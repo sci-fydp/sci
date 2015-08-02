@@ -46,7 +46,7 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
 
     private static final String SHOPPING_LIST_NAME_KEY = "LISTNAMEKEY";
     private static final String NEW_SHOPPING_LIST_KEY = "NEWKEY";
-    private static final int SEARCH_DROP_DOWN_HEIGHT = 200;
+    private static final int SEARCH_DROP_DOWN_HEIGHT = 300;
     int searchTerrorTag = 0; // this is terror.
     HashSet<Grocery> savedGroceries = new HashSet<Grocery>();//Real terror.
     private String shoppingListName;
