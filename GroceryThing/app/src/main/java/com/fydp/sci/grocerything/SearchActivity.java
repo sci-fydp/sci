@@ -52,7 +52,9 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
     private String shoppingListName;
     private boolean isNew;
     private ProgressDialog progressDialog;
-
+	ArrayList<Purchase> additionalPurchases = new ArrayList<Purchase>();
+	ArrayList<Purchase> deletedPurchases = new ArrayList<Purchase>();
+			
     //TODO STICK EXISTING GROCERIES IN?.... OR VIA MODEL..... hmm.....
     public static Intent createIntent(Context context, String name)
     {
@@ -95,6 +97,8 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
         {
             theShoppingList = Model.getInstance().FIXMEList();
             purchases.addAll(Model.getInstance().FIXMEPurchase());
+			
+			
         }
 
         setTitle(shoppingListName);
@@ -118,7 +122,14 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long rowId) {
                 Grocery selection = (Grocery) parent.getItemAtPosition(position);
-                purchases.add(new Purchase(selection));
+				Purchase purchase = new Purchase(selection);
+                purchases.add(purchase);
+				
+				if (!isNew)
+				{
+					additionalPurchases.add(purchase);
+				}
+				
                 groceryListAdapter.notifyDataSetChanged();
                 Log.d("SEARCHACITITY", "SELECTED! " + selection);
                 searchTextView.setText("");
@@ -173,7 +184,7 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
         public View getView(int position, View convertView, ViewGroup parent) {
 
             // View rowView = convertView;
-            final ShoppingListViewHolder viewHolder;
+            final ShoppingListItemViewHolder viewHolder;
 
             if (convertView == null) {
 
@@ -183,27 +194,32 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
 
                 convertView  = inflater.inflate(R.layout.shopping_list_row, parent, false);
 
-                viewHolder = new ShoppingListViewHolder();
+                viewHolder = new ShoppingListItemViewHolder();
 
                 viewHolder.checkboxImage=(CheckBox)convertView.findViewById(R.id.shopping_list_row_checkBox);
                 viewHolder.nameText=(TextView)convertView.findViewById(R.id.shopping_list_row_text);
                 viewHolder.nextImage=(ImageView)convertView.findViewById(R.id.shopping_list_row_arrow);
-
-             /*
-                viewHolder.downloadImageButton.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        System.out.println("DOWNLOAD PRESSED");
-
-                        viewHolder.downloadImageButton = (ImageView)v.findViewById(R.id.downloadImageButton);
-                        viewHolder.downloadImageButton.setImageResource(R.drawable.icon_ok);
-                        viewHolder.downloadImageButton.setTag("downloaded");
-                        //rowView.setTag("downloaded");
-
-
-                    }
-                });
-*/
+				
+				/*
+				
+				viewHolder.deleteButton =(Button)convertView.findViewById(R.id.shopping_list_delete_button);
+				viewHolder.deleteButton.setOnClickListener(new View.OnClickListener()
+				{
+					@Override
+					public void onClick()
+					{
+						//.... some are you sure dialog.
+						
+						//add to deleted purchases if not new
+						if (!isNew)
+						{
+							deletedPurchases = ;
+						}
+						notifyDataSetChanged();
+						blah blah blah. zzzz TODO;
+					}
+				});
+				*/
 
 
                 convertView.setTag(viewHolder);
@@ -211,23 +227,24 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
             }
 
             else{
-                viewHolder= (ShoppingListViewHolder)convertView.getTag();
+                viewHolder= (ShoppingListItemViewHolder)convertView.getTag();
             }
 
             viewHolder.nameText.setText(purchases.get(position).getName());
 
             return convertView;
 
-        } //close getView public View getView(int position, View convertView, ViewGroup parent) {
+        } 
 
 
     }
 
-    static class ShoppingListViewHolder
+    static class ShoppingListItemViewHolder
     {
         public TextView nameText;
         public ImageView nextImage;
         public CheckBox checkboxImage;
+		public Button deleteButton;
     }
 
 
@@ -276,7 +293,9 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
 
         //hmm...... do i really need that number lol.
         theShoppingList = new ShoppingList(shoppingListName, 3589083);
-        Model.getInstance().saveShoppingList(this, theShoppingList, isNew, purchases);
+		
+		//TODO pass in additional purchase and edeleted.
+        Model.getInstance().saveShoppingList(this, theShoppingList, isNew, purchases, additionalPurchases, deletedPurchases);
     }
 
     //Model Response
