@@ -21,10 +21,10 @@ public class User extends Controller {
 			JsonNode registrationJson = json.findPath("register");
 //			JsonNode addressJson = registrationJson.findPath("address");
 			
-			String email = registrationJson.get("email").toString();
-			String hashedPassword = registrationJson.get("password").toString();
-			String storeIdAvoidList = registrationJson.get("avoidlist").toString();
-			String udid = registrationJson.get("udid").toString();
+			String email = registrationJson.get("email").textValue();
+			String hashedPassword = registrationJson.get("password").textValue();
+			String storeIdAvoidList = registrationJson.get("avoidlist").textValue();
+			String udid = registrationJson.get("udid").textValue();
 
 			models.User user = models.User.find.where().eq("email", email).findUnique();
 			
@@ -75,6 +75,7 @@ public class User extends Controller {
 	    	return ok(Json.toJson(user));
 		}
 		catch(Exception e) {
+			System.out.println("Register Exception: " + e.getMessage());
 			return ok(Json.toJson("invalid request format"));
 		}
 	}
@@ -95,9 +96,9 @@ public class User extends Controller {
 			
 			JsonNode loginJson = json.findPath("login");
 			
-			String email = loginJson.get("email").toString();
-			String hashedPassword = loginJson.get("password").toString();
-			String udid = loginJson.get("udid").toString();
+			String email = loginJson.get("email").textValue();
+			String hashedPassword = loginJson.get("password").textValue();
+			String udid = loginJson.get("udid").textValue();
 			
 			models.User user = models.User.find.where().eq("email", email).eq("hashedPassword", hashedPassword).findUnique();
 			
@@ -114,6 +115,7 @@ public class User extends Controller {
 			return ok(Json.toJson(user));
 		}
 		catch(Exception e) {
+			System.out.println("Login Exception: " + e.getMessage());
 			return ok(Json.toJson("invalid request format"));
 		}
 	}
@@ -126,9 +128,9 @@ public class User extends Controller {
 			JsonNode userJson = saveShoppingListJson.findPath("user");
 	
 			int userId = userJson.get("user_id").intValue();
-			String sessionStr = userJson.get("sessionStr").textValue();
+			String sessionStr = userJson.get("session_str").textValue();
 			
-			String name = saveShoppingListJson.get("name").toString();
+			String name = saveShoppingListJson.get("name").textValue();
 			
 			models.User user = models.User.find.where().eq("id", userId).eq("sessionStr", sessionStr).findUnique();
 			
@@ -140,6 +142,7 @@ public class User extends Controller {
 			return ok(Json.toJson(shoppingList));
 		}
 		catch(Exception e) {
+			System.out.println("SaveShoppingList Exception: " + e.getMessage());
 			return ok(Json.toJson("invalid request format"));
 		}
 	}
@@ -152,7 +155,7 @@ public class User extends Controller {
 			
 			int userId = userJson.get("user_id").intValue();
 						
-			String sessionStr = userJson.get("sessionStr").textValue();
+			String sessionStr = userJson.get("session_str").textValue();
 						
 			models.User user = models.User.find.where().eq("id", userId).eq("sessionStr", sessionStr).findUnique();
 			
@@ -165,6 +168,7 @@ public class User extends Controller {
 			return ok(Json.toJson(lists));
 		}
 		catch(Exception e) {
+			System.out.println("GetShoppingListItem Exception: " + e.getMessage());
 			return ok(Json.toJson("invalid request format"));
 		}
 	}
@@ -177,10 +181,10 @@ public class User extends Controller {
 			JsonNode userJson = updateShoppingListJson.findPath("user");
 	
 			int userId = userJson.get("user_id").intValue();
-			String sessionStr = userJson.get("sessionStr").textValue();
+			String sessionStr = userJson.get("session_str").textValue();
 			
 			int shoppingListId = updateShoppingListJson.get("id").intValue();
-			String name = updateShoppingListJson.get("name").toString();
+			String name = updateShoppingListJson.get("name").textValue();
 			
 			models.User user = models.User.find.where().eq("id", userId).eq("sessionStr", sessionStr).findUnique();
 			
@@ -188,7 +192,12 @@ public class User extends Controller {
 				return ok(Json.toJson("error: unauthorized action"));
 			}
 			
-			UserShoppingList shoppingList = UserShoppingList.find.where().eq("id", shoppingListId).findUnique();
+			UserShoppingList shoppingList = UserShoppingList.find.where().eq("id", shoppingListId).eq("user_id", user.id).findUnique();
+			
+			if(shoppingList == null) {
+				return ok(Json.toJson("shoppinglist with id:" + shoppingListId + " does not exist"));
+			}
+			
 			shoppingList.userId = user.id;
 			shoppingList.name = name;
 			shoppingList.update();
@@ -196,6 +205,7 @@ public class User extends Controller {
 			return ok(Json.toJson(shoppingList));
 		}
 		catch(Exception e) {
+			System.out.println("UpdateShoppingList Exception: " + e.getMessage());
 			return ok(Json.toJson("invalid request format"));
 		}
 	}
@@ -205,30 +215,63 @@ public class User extends Controller {
 			JsonNode json = request().body().asJson();
 			
 			JsonNode updateShoppingListJson = json.findPath("delete");
+			
 			JsonNode userJson = updateShoppingListJson.findPath("user");
-	
 			int userId = userJson.get("user_id").intValue();
-			String sessionStr = userJson.get("sessionStr").textValue();
+			String sessionStr = userJson.get("session_str").textValue();
 			
 			int shoppingListId = updateShoppingListJson.get("id").intValue();
-			
 			models.User user = models.User.find.where().eq("id", userId).eq("sessionStr", sessionStr).findUnique();
 			
 			if(user == null) {
 				return ok(Json.toJson("error: unauthorized action"));
 			}
+			UserShoppingList shoppingList = UserShoppingList.find.where().eq("id", shoppingListId).eq("user_id", user.id).findUnique();
 			
-			UserShoppingList shoppingList = UserShoppingList.find.where().eq("id", shoppingListId).findUnique();
+			if(shoppingList == null) {
+				return ok(Json.toJson("shoppinglist with id:" + shoppingListId + " does not exist"));
+			}
+			
 			shoppingList.delete();
 			
 			return ok(Json.toJson("deleted"));
 		}
 		catch(Exception e) {
+			System.out.println("DeleteShoppingList Exception: " + e.getMessage());
 			return ok(Json.toJson("invalid request format"));
 		}
 	}
 	
-	public static Result saveShoppingListItem() {
+	public static Result saveShoppingListItems() {
+		/* {
+			  "save": {
+			    "user": {
+			      "user_id": 1,
+			      "session_str": "asdf"
+			    },
+			    "shopping_list_id": 1,
+			    "items": [
+			      {
+			        "item_id": null,
+			        "location_id": null,
+			        "name": "itemName",
+			        "description": "description",
+			        "price": 123
+			      },
+			      {
+			        "item_id": null,
+			        "location_id": null,
+			        "name": "itemName",
+			        "description": "description",
+			        "price": 123
+			      }
+			    ]
+			  }
+			}
+		 * 
+		 * 
+		 */
+		
 		try{
 			JsonNode json = request().body().asJson();
 			
@@ -236,7 +279,7 @@ public class User extends Controller {
 			JsonNode userJson = saveShoppingItemJson.findPath("user");
 			
 			int userId = userJson.get("user_id").intValue();
-			String sessionStr = userJson.get("sessionStr").textValue();
+			String sessionStr = userJson.get("session_str").textValue();
 			
 			models.User user = models.User.find.where().eq("id", userId).eq("sessionStr", sessionStr).findUnique();
 			
@@ -245,42 +288,51 @@ public class User extends Controller {
 			}
 			
 			int shoppingListId = saveShoppingItemJson.get("shopping_list_id").intValue();
-			int itemId = saveShoppingItemJson.get("item_id").intValue();
-			int locationId = saveShoppingItemJson.get("location_id").intValue();
-			String name = saveShoppingItemJson.get("name").toString();
-			String description = saveShoppingItemJson.get("description").toString();
-			Float price = saveShoppingItemJson.get("price").floatValue();
 			
-			UserShoppingList shoppingList = UserShoppingList.find.where().eq("id", shoppingListId).findUnique();
-	
+			UserShoppingList shoppingList = UserShoppingList.find.where().eq("id", shoppingListId).eq("user_id", user.id).findUnique();
+			
 			if(shoppingList == null) {
 				return ok(Json.toJson("error: invalid shopping list id"));
 			}
 			
-			UserShoppingListItem shoppingListItem = new UserShoppingListItem();
-			shoppingListItem.shoppingList = shoppingList;
-			
-			Item item = Item.find.where().eq("id", itemId).findUnique();
-			if(item != null) {
-				shoppingListItem.item = item;
+			JsonNode itemsNode = saveShoppingItemJson.get("items");
+			if(itemsNode.isArray()) {
+				for(JsonNode itemNode : itemsNode) {
+					int itemId = itemNode.get("item_id").intValue();
+					int locationId = itemNode.get("location_id").intValue();
+					String name = itemNode.get("name").textValue();
+					String description = itemNode.get("description").textValue();
+					Float price = itemNode.get("price").floatValue();
+					
+					UserShoppingListItem shoppingListItem = new UserShoppingListItem();
+					shoppingListItem.shoppingList = shoppingList;
+					
+					Item item = Item.find.where().eq("id", itemId).findUnique();
+					if(item != null) {
+						shoppingListItem.item = item;
+					}
+					
+					StoreLocation location = StoreLocation.find.where().eq("id", locationId).findUnique();
+					if(location != null) {
+						shoppingListItem.location = location;
+					}
+					
+					shoppingListItem.name = name;
+					
+					shoppingListItem.description = description;
+					
+					shoppingListItem.price = price;
+					
+					shoppingListItem.item = null;
+					
+					shoppingListItem.save();
+				}
 			}
-			
-			StoreLocation location = StoreLocation.find.where().eq("id", locationId).findUnique();
-			if(location != null) {
-				shoppingListItem.location = location;
-			}
-			
-			shoppingListItem.name = name;
-			
-			shoppingListItem.description = description;
-			
-			shoppingListItem.price = price;
-			
-			shoppingListItem.save();
 			
 			return ok(Json.toJson("saved"));
 		}
 		catch(Exception e) {
+			System.out.println("SaveShoppingListItem Exception: " + e.getMessage());
 			return ok(Json.toJson("invalid request format"));
 		}
 	}
@@ -293,7 +345,7 @@ public class User extends Controller {
 			JsonNode userJson = getShoppingListJson.findPath("user");
 			
 			int userId = userJson.get("user_id").intValue();
-			String sessionStr = userJson.get("sessionStr").textValue();
+			String sessionStr = userJson.get("session_str").textValue();
 			int shoppingListId = getShoppingListJson.get("shopping_list_id").intValue();
 			
 			models.User user = models.User.find.where().eq("id", userId).eq("sessionStr", sessionStr).findUnique();
@@ -302,37 +354,50 @@ public class User extends Controller {
 				return ok(Json.toJson("error: unauthorized action"));
 			}
 			
+			UserShoppingList shoppingList = UserShoppingList.find.where().eq("id", shoppingListId).eq("user_id", user.id).findUnique();
+
+			if(shoppingList == null) {
+				return ok(Json.toJson("error: unauthorized shopping list"));
+			}
+			
 			List<UserShoppingListItem> items = UserShoppingListItem.find.where().eq("shopping_list_id", shoppingListId).findList();
 			
 			return ok(Json.toJson(items));
 		}
 		catch(Exception e) {
+			System.out.println("GetShoppingListItem Exception: " + e.getMessage());
 			return ok(Json.toJson("invalid request format"));
 		}
 	}
 	
-	public static Result updateShoppingListItem() {
+	public static Result updateShoppingListItems() {
 		try {
-			/* { 
-				"update" : {
-					"user" : {
-						"user_id" : xxxx,
-						"session_str" : "yyyy"
-						},
-					"shopping_list_id" : zzzz,
-					"old_item" : {
-							"item_id" :
-							"location_id" :
-							"name" :
-							"description" :
-						},
-					"new_item" : {
-							"item_id" :
-							"location_id" :
-							"name" :
-							"description" :
-							"price" :
-						}
+			/* {
+				  "update": {
+				    "user": {
+				      "user_id": 1,
+				      "session_str": "asdf"
+				    },
+				    "shopping_list_id": 1,
+				    "items": [
+				      {
+				        "id": 1,
+				        "item_id": null,
+				        "location_id": null,
+				        "name": "newItemName",
+				        "description": "newDescription",
+				        "price": 1234
+				      },
+				      {
+				        "id": 2,
+				        "item_id": null,
+				        "location_id": null,
+				        "name": "newItemName2",
+				        "description": "newDescription2",
+				        "price": 456
+				      }
+				    ]
+				  }
 				}
 			} */
 					
@@ -341,65 +406,73 @@ public class User extends Controller {
 			JsonNode updateShoppingItemJson = json.findPath("update");
 			JsonNode userJson = updateShoppingItemJson.findPath("user");
 			int userId = userJson.get("user_id").intValue();
-			String sessionStr = userJson.get("sessionStr").textValue();
+			String sessionStr = userJson.get("session_str").textValue();
 			
 			models.User user = models.User.find.where().eq("id", userId).eq("sessionStr", sessionStr).findUnique();
 			
 			if(user == null) {
 				return ok(Json.toJson("error: unauthorized action"));
 			}
-			
+
 			int shoppingListId = updateShoppingItemJson.get("shopping_list_id").intValue();
-			JsonNode oldItemJsonNode = updateShoppingItemJson.findPath("old_item");
-			int oldItemId = oldItemJsonNode.get("item_id").intValue();
-			int oldLocationId = oldItemJsonNode.get("location_id").intValue();
-			String oldName = oldItemJsonNode.get("name").toString();
-			String oldDescription = oldItemJsonNode.get("description").toString();
+
+			UserShoppingList shoppingList = UserShoppingList.find.where().eq("id", shoppingListId).eq("user_id", user.id).findUnique();
+
+			if(shoppingList == null) {
+				return ok(Json.toJson("error: unauthorized shopping list"));
+			}
 			
-			JsonNode newItemJsonNode = updateShoppingItemJson.findPath("new_item");
-			int newItemId = newItemJsonNode.get("item_id").intValue();
-			int newLocationId = newItemJsonNode.get("location_id").intValue();
-			String newName = newItemJsonNode.get("name").toString();
-			String newDescription = newItemJsonNode.get("description").toString();
-			Float newPrice = newItemJsonNode.get("price").floatValue();
-			
-			UserShoppingListItem oldItem = UserShoppingListItem.find.where().eq("shopping_list_id", shoppingListId)
-					.eq("item.id", oldItemId)
-					.eq("location_id", oldLocationId)
-					.eq("name", oldName)
-					.eq("description", oldDescription)
-					.findUnique();
-			
-			oldItem.item.id = newItemId;
-			oldItem.location.id = newLocationId;
-			oldItem.name = newName;
-			oldItem.description = newDescription;
-			oldItem.price = newPrice;
-			oldItem.update();
+			JsonNode itemsNode = updateShoppingItemJson.get("items");
+			if(itemsNode.isArray()) {
+				for(JsonNode itemNode : itemsNode) {
+					int itemId = itemNode.get("id").intValue();
+					
+					int newItemId = itemNode.get("item_id").intValue();
+					int newLocationId = itemNode.get("location_id").intValue();
+					String newName = itemNode.get("name").textValue();
+					String newDescription = itemNode.get("description").textValue();
+					Float newPrice = itemNode.get("price").floatValue();
+					
+					UserShoppingListItem item = UserShoppingListItem.find.where().eq("shopping_list_id", shoppingListId)
+							.eq("id", itemId).findUnique();
+					
+					if(item == null) {
+						return ok(Json.toJson("invalid item id: " + itemId));
+					}
+					if(newItemId != 0) item.item.id = newItemId;
+					if(newLocationId != 0) item.location.id = newLocationId;
+					item.name = newName;
+					item.description = newDescription;
+					item.price = newPrice;
+					
+					item.update();
+				}
+			}
+
 			UserShoppingList.find.where().eq("id", shoppingListId).findUnique().update();
-			
+
 			return ok(Json.toJson("updated"));
 		}
 		catch(Exception e) {
+			System.out.println("UpdateShoppingListItem Exception: " + e.getMessage());
 			return ok(Json.toJson("invalid request format"));
 		}
 	}
 	
-	public static Result deleteShoppingListItem() {
+	public static Result deleteShoppingListItems() {
 		try {
-			/* { 
-				"delete" : {
-					"user" : {
-						"user_id" : xxxx,
-						"session_str" : "yyyy"
-						},
-					"shopping_list_id" : zzzz,
-					"item" : {
-							"item_id" :
-							"location_id" :
-							"name" :
-							"description" :
-						}
+			/* {
+				  "delete": {
+				    "user": {
+				      "user_id": 1,
+				      "session_str": "asdf"
+				    },
+				    "shopping_list_id": 1,
+				    "item_ids": [
+				      1,
+				      2
+				    ]
+				  }
 				}
 			} */
 					
@@ -408,7 +481,7 @@ public class User extends Controller {
 			JsonNode deleteShoppingItemJson = json.findPath("delete");
 			JsonNode userJson = deleteShoppingItemJson.findPath("user");
 			int userId = userJson.get("user_id").intValue();
-			String sessionStr = userJson.get("sessionStr").textValue();
+			String sessionStr = userJson.get("session_str").textValue();
 			
 			models.User user = models.User.find.where().eq("id", userId).eq("sessionStr", sessionStr).findUnique();
 			
@@ -417,25 +490,31 @@ public class User extends Controller {
 			}
 			
 			int shoppingListId = deleteShoppingItemJson.get("shopping_list_id").intValue();
-			JsonNode itemJsonNode = deleteShoppingItemJson.findPath("item");
-			int oldItemId = itemJsonNode.get("item_id").intValue();
-			int oldLocationId = itemJsonNode.get("location_id").intValue();
-			String oldName = itemJsonNode.get("name").toString();
-			String oldDescription = itemJsonNode.get("description").toString();
 			
-			UserShoppingListItem oldItem = UserShoppingListItem.find.where().eq("shopping_list_id", shoppingListId)
-					.eq("item.id", oldItemId)
-					.eq("location_id", oldLocationId)
-					.eq("name", oldName)
-					.eq("description", oldDescription)
-					.findUnique();
+			UserShoppingList shoppingList = UserShoppingList.find.where().eq("id", shoppingListId).eq("user_id", user.id).findUnique();
+
+			if(shoppingList == null) {
+				return ok(Json.toJson("error: unauthorized shopping list"));
+			}
 			
-			oldItem.delete();
+			JsonNode itemIdsNode = deleteShoppingItemJson.get("item_ids");
+			if(itemIdsNode.isArray()) {
+				for(JsonNode itemIdNode : itemIdsNode) {
+					int itemId = itemIdNode.intValue();
+					UserShoppingListItem item = UserShoppingListItem.find.where().eq("shopping_list_id", shoppingListId).eq("id", itemId).findUnique();
+					if(item == null) {
+						return ok(Json.toJson("invalid item id: " + itemId));
+					}
+					item.delete();
+				}
+			}
+			
 			UserShoppingList.find.where().eq("id", shoppingListId).findUnique().update();
 			
 			return ok(Json.toJson("deleted"));
 		}
 		catch(Exception e) {
+			System.out.println("DeleteShoppingListItem Exception: " + e.getMessage());
 			return ok(Json.toJson("invalid request format"));
 		}
 	}

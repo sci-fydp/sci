@@ -2,6 +2,7 @@ package models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 
 import models.base.DatedModel;
 import play.db.ebean.Model;
@@ -11,6 +12,7 @@ public class UserShoppingList extends DatedModel {
 
 	private static final long serialVersionUID = 1L;
 
+	@Id
 	public int id;
 	
 	@Column(name="user_id")

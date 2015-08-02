@@ -13,10 +13,10 @@ POST    /user/saveShoppingList              controllers.User.saveShoppingList()
 POST    /user/getShoppingLists				controllers.User.getShoppingLists()
 POST    /user/updateShoppingList			controllers.User.updateShoppingList()
 POST    /user/deleteShoppingList			controllers.User.deleteShoppingList()
-POST    /user/saveShoppingListItem			controllers.User.saveShoppingListItem()
+POST    /user/saveShoppingListItems			controllers.User.saveShoppingListItems()
 POST    /user/getShoppingListItems			controllers.User.getShoppingListItems()
-POST    /user/updateShoppingListItem		controllers.User.updateShoppingListItem()
-POST    /user/deleteShoppingListItem		controllers.User.deleteShoppingListItem()
+POST    /user/updateShoppingListItems		controllers.User.updateShoppingListItems()
+POST    /user/deleteShoppingListItems		controllers.User.deleteShoppingListItems()
 
 # Test for MySQL
 GET     /testall                    controllers.Test.testAll()

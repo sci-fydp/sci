@@ -1,6 +1,7 @@
 package models;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -12,7 +13,11 @@ public class UserShoppingListItem extends Model {
 
 	private static final long serialVersionUID = 1L;
 	
+	@Id
+	public int id;
+	
 	@Required
+	@ManyToOne
 	@JoinColumn(name="shopping_list_id", referencedColumnName="id")
 	public UserShoppingList shoppingList;
 	

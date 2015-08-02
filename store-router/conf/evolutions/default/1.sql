@@ -246,12 +246,14 @@ CREATE TABLE `user_shopping_list` (
 # ------------------------------------------------------------
 
 CREATE TABLE `user_shopping_list_item` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `shopping_list_id` int(11) NOT NULL,
   `item_id` int(11) DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
-  `price` float DEFAULT NULL
+  `price` float DEFAULT 0,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

@@ -30,6 +30,24 @@ public class Test extends Controller {
     
     //generate truncate queries: SELECT Concat('TRUNCATE TABLE ', TABLE_NAME, ';') FROM INFORMATION_SCHEMA.TABLES where table_schema in ('store_route_db');
     
+    // curl -H "Content-Type: application/json; charset=UTF-8" -X POST http://localhost:9000/user/register -d '{"register":{"email":"alqiluo@gmail.com", "password":"asdf", "avoidlist":"avoidlist", "udid":"1234"}}'
+    
+    // curl -H "Content-Type: application/json; charset=UTF-8" -X POST http://localhost:9000/user/saveShoppingList -d '{"save":{"user":{"user_id":1, "session_str":"asdf"}, "name":"shoppingList1"}}'
+    
+    // curl -H "Content-Type: application/json; charset=UTF-8" -X POST http://localhost:9000/user/getShoppingLists -d '{"getShoppingLists":{"user":{"user_id":1, "session_str":"asdf"}}}'
+    
+    // curl -H "Content-Type: application/json; charset=UTF-8" -X POST http://localhost:9000/user/updateShoppingList -d '{"update":{"user":{"user_id":1, "session_str":"asdf"}, "id":2, "name":"newShoppingList"}}'
+    
+    // curl -H "Content-Type: application/json; charset=UTF-8" -X POST http://localhost:9000/user/deleteShoppingList -d '{"delete":{"user":{"user_id":1, "session_str":"asdf"}, "id":1}}'
+    
+    // curl -H "Content-Type: application/json; charset=UTF-8" -X POST http://localhost:9000/user/saveShoppingListItems -d '{"save":{"user":{"user_id":1, "session_str":"asdf"}, "shopping_list_id":1, "item_id":null, "location_id":null, "name":"itemName", "description":"description", "price":123}}'
+    
+    // curl -H "Content-Type: application/json; charset=UTF-8" -X POST http://localhost:9000/user/getShoppingListItems -d '{"get":{"user":{"user_id":1, "session_str":"asdf"}, "shopping_list_id":1}}'
+    
+    // curl -H "Content-Type: application/json; charset=UTF-8" -X POST http://localhost:9000/user/updateShoppingListItems -d '{"update":{"user":{"user_id":1, "session_str":"asdf"}, "shopping_list_id":1, "items":[{"id":1,"item_id":null, "location_id":null, "name":"newItemName", "description":"newDescription", "price":1234},{"id":2,"item_id":null, "location_id":null, "name":"newItemName2", "description":"newDescription2", "price":456}]}}'
+    
+    // curl -H "Content-Type: application/json; charset=UTF-8" -X POST http://localhost:9000/user/deleteShoppingListItems -d '{"delete":{"user":{"user_id":1, "session_str":"asdf"}, "shopping_list_id":1, "item_ids":[1,2]}}'
+    
     public static Result testAll() {
     	City city = new City();
     	city.name = "TESTCITY";
