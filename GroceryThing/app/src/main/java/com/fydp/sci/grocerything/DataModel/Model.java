@@ -109,7 +109,7 @@ public class Model {
         }
     }
 
-    public void saveShoppingList(final ModelSaveShoppingListListener listener, ShoppingList shopList, boolean isNew, List<Purchase> purchases)
+    public void saveShoppingList(final ModelSaveShoppingListListener listener, final ShoppingList shopList, boolean isNew, List<Purchase> purchases, final ArrayList<Purchase> additionalPurchases, ArrayList<Purchase> deletedPurchases)
     {
         final List<Purchase> savePurchases = purchases;
         if (isNew)
@@ -121,14 +121,7 @@ public class Model {
                 @Override
                 public void success(AbstractShoppingListAsyncTask task, Object obj) {
                     ShoppingList list = (ShoppingList) obj;
-                    if (savePurchases.size() == 0)
-                    {
-                        listener.success(list);
-                    }
-                    else
-                    {
-                        saveShoppingListGroceries(listener, list, savePurchases);
-                    }
+                    saveShoppingListGroceries(listener, list, savePurchases);
                 }
 
                 @Override
@@ -142,8 +135,25 @@ public class Model {
         else
         {
             //TODO
-            saveShoppingListGroceries(listener, shopList, savePurchases);
+            deleteShoppingListGroceries(new IChainSave() {
+
+                @Override
+                public void success() {
+                    saveShoppingListGroceries(listener, shopList, additionalPurchases);
+                }
+
+                @Override
+                public void failure(String s) {
+                    listener.failure(s);
+                }
+            },shopList, deletedPurchases);
         }
+    }
+
+    private interface IChainSave
+    {
+        void success();
+        void failure(String s);
     }
 
     public void deleteShoppingList(final ModelDeleteShoppingListListener listener, ShoppingList shopList)
@@ -176,6 +186,12 @@ public class Model {
     private void saveShoppingListGroceries(final ModelSaveShoppingListListener listener, ShoppingList list, List<Purchase> purchases)
     {
 
+        if (purchases.size() == 0)
+        {
+            listener.success(list);
+            return;
+        }
+
         final ShoppingList savedList = list;
 
         SaveShoppingListItemAsyncTask task = new SaveShoppingListItemAsyncTask();
@@ -187,6 +203,37 @@ public class Model {
             public void success(AbstractShoppingListAsyncTask task, Object obj) {
                 //String str = (String) obj;
                 listener.success(savedList);
+            }
+
+            @Override
+            public void failure(AbstractShoppingListAsyncTask task, String reason) {
+                listener.failure(reason);
+            }
+        });
+
+        task.execute();
+
+    }
+
+
+    private void deleteShoppingListGroceries(final IChainSave listener, ShoppingList list, List<Purchase> purchases)
+    {
+        if (purchases.size() == 0)
+        {
+            listener.success();
+            return;
+        }
+        final ShoppingList savedList = list;
+
+        SaveShoppingListItemAsyncTask task = new SaveShoppingListItemAsyncTask();
+
+        task.setParams(list, purchases);
+        task.addListener(new AbstractShoppingListAsyncTask.ShoppingListTaskListener() {
+
+            @Override
+            public void success(AbstractShoppingListAsyncTask task, Object obj) {
+                //String str = (String) obj;
+                listener.success();
             }
 
             @Override

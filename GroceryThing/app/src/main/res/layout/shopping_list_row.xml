@@ -34,4 +34,14 @@
         android:src = "@drawable/right_arrow"
         android:layout_centerVertical="true"
         android:layout_alignParentRight = "true"/>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Button"
+        android:id="@+id/shopping_list_row_delete_button"
+        android:layout_centerVertical="true"
+        android:layout_alignRight="@id/shopping_list_row_arrow"
+        android:layout_alignEnd="@id/shopping_list_row_arrow" />
 </RelativeLayout>

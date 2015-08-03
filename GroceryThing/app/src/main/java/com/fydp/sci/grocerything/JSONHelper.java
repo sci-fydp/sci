@@ -204,6 +204,36 @@ public class JSONHelper {
         return mainObj;
     }
 
+    public static JSONObject generateDeleteShoppingListItemJSON(ShoppingList shopList, List<Purchase> purchases)
+    {
+        JSONObject mainObj = new JSONObject();
+        try
+        {
+            JSONObject obj = getUserDataJSON();
+
+
+            obj.put("shopping_list_id", shopList.getId());
+
+
+            JSONArray jPurchaseArray = new JSONArray();
+
+            for (Purchase purchase : purchases)
+            {
+                jPurchaseArray.put(purchase.getId());
+            }
+
+            obj.put("item_ids", jPurchaseArray);
+
+            mainObj.put(JKEY_DELETE_KEY, obj);
+
+        }
+        catch(Exception e)
+        {
+
+        }
+        return mainObj;
+    }
+
     private static JSONObject getPurchaseJSON(Purchase purchase)
     {
         try {

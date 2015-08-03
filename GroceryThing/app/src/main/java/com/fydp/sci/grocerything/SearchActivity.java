@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -200,26 +201,29 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
                 viewHolder.nameText=(TextView)convertView.findViewById(R.id.shopping_list_row_text);
                 viewHolder.nextImage=(ImageView)convertView.findViewById(R.id.shopping_list_row_arrow);
 				
-				/*
+				final int purchasePosition = position;
 				
-				viewHolder.deleteButton =(Button)convertView.findViewById(R.id.shopping_list_delete_button);
+				viewHolder.deleteButton =(Button)convertView.findViewById(R.id.shopping_list_row_delete_button);
 				viewHolder.deleteButton.setOnClickListener(new View.OnClickListener()
 				{
-					@Override
-					public void onClick()
+                    @Override
+					public void onClick(View v)
 					{
+                        Purchase purchase = purchases.get(purchasePosition);
 						//.... some are you sure dialog.
 						
 						//add to deleted purchases if not new
 						if (!isNew)
 						{
-							deletedPurchases = ;
+							deletedPurchases.add(purchase);
 						}
-						notifyDataSetChanged();
-						blah blah blah. zzzz TODO;
+
+
+                        purchases.remove(purchasePosition);
+                        groceryListAdapter.notifyDataSetChanged();
 					}
 				});
-				*/
+
 
 
                 convertView.setTag(viewHolder);
