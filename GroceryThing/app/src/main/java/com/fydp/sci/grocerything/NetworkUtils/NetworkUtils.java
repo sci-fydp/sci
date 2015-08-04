@@ -5,6 +5,7 @@ public class NetworkUtils {
 
     private static NetworkUtils INSTANCE = null;
     public static String BASE_URL = "http://10.0.3.2:9000"; //GENYMOTION EMULATOR
+    //public static String BASE_URL = "http://10.0.2.2:9000"; //ANDROID EMULATOR
     public static NetworkUtils getInstance()
     {
         if (INSTANCE == null)
