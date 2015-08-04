@@ -8,9 +8,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-//TODO inprogress.
-
-//OK i'm just going to make this do everything nvm, too hard
 public class DeleteShoppingListItemAsyncTask extends AbstractShoppingListAsyncTask {
 
     List<Purchase> purchases;
@@ -24,18 +21,14 @@ public class DeleteShoppingListItemAsyncTask extends AbstractShoppingListAsyncTa
     {
         this.shopList = shopList;
         this.purchases = purchases;
-        //TODO
     }
     @Override
     protected JSONObject getJSONParams() {
         return JSONHelper.generateDeleteShoppingListItemJSON(shopList, purchases);
-        //TODO
     }
 
     @Override
     protected Object processResponse(String response) {
-        //Parse result
-        //TODO
         return response;
     }
 

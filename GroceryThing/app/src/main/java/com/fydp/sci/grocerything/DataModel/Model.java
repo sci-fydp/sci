@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.fydp.sci.grocerything.NetworkUtils.AbstractShoppingListAsyncTask;
 import com.fydp.sci.grocerything.NetworkUtils.DeleteShoppingListAsyncTask;
+import com.fydp.sci.grocerything.NetworkUtils.DeleteShoppingListItemAsyncTask;
 import com.fydp.sci.grocerything.NetworkUtils.GetShoppingListItemsAsyncTask;
 import com.fydp.sci.grocerything.NetworkUtils.GetShoppingListsAsyncTask;
 import com.fydp.sci.grocerything.NetworkUtils.NewShoppingListAsyncTask;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Model {
+
 
     public interface ModelGetShoppingListItemsListener
     {
@@ -40,6 +42,12 @@ public class Model {
         void failure(String reason);
     }
 
+    public interface NewShoppingListObserver
+    {
+        void shoppingListAdded(ShoppingList s);
+    }
+
+    private static ArrayList<NewShoppingListObserver> newShoppingListObservers;
     private static Model INSTANCE = null;
     private UserSession userSession;
     private ArrayList<ShoppingList> shoppingLists;
@@ -49,9 +57,27 @@ public class Model {
         if (INSTANCE == null)
         {
             INSTANCE = new Model();
+            INSTANCE.newShoppingListObservers = new ArrayList<NewShoppingListObserver>();
         }
         return INSTANCE;
     }
+
+    public void subscribeNewShoppingListObserver(NewShoppingListObserver obs) {
+        if (!newShoppingListObservers.contains(obs))
+            newShoppingListObservers.add(obs);
+    }
+
+    public void unsubscribeNewShoppingListObserver(NewShoppingListObserver obs) {
+        newShoppingListObservers.remove(obs);
+    }
+
+    private void notifyNewShoppingList(ShoppingList l)
+    {
+        for (NewShoppingListObserver obs : newShoppingListObservers)
+            obs.shoppingListAdded(l);
+    }
+
+
     public void loginSuccess(UserSession session)
     {
         userSession = session;
@@ -121,6 +147,9 @@ public class Model {
                 @Override
                 public void success(AbstractShoppingListAsyncTask task, Object obj) {
                     ShoppingList list = (ShoppingList) obj;
+
+                    notifyNewShoppingList(list);
+
                     saveShoppingListGroceries(listener, list, savePurchases);
                 }
 
@@ -134,7 +163,7 @@ public class Model {
         }
         else
         {
-            //TODO
+            //FIXME is it possible to make this atomic?.... probably not..zzzzz
             deleteShoppingListGroceries(new IChainSave() {
 
                 @Override
@@ -169,8 +198,6 @@ public class Model {
             public void success(AbstractShoppingListAsyncTask task, Object obj) {
                 String str = (String) obj;
                 listener.success(str, savedList);
-                //TODO
-                //saveShoppingListGroceries(listener);
             }
 
             @Override
@@ -225,7 +252,7 @@ public class Model {
         }
         final ShoppingList savedList = list;
 
-        SaveShoppingListItemAsyncTask task = new SaveShoppingListItemAsyncTask();
+        DeleteShoppingListItemAsyncTask task = new DeleteShoppingListItemAsyncTask();
 
         task.setParams(list, purchases);
         task.addListener(new AbstractShoppingListAsyncTask.ShoppingListTaskListener() {
@@ -270,6 +297,8 @@ public class Model {
         task.execute();
     }
 
+
+    //Temporary hack to pass existing shopping list to searchactivity.... think about how to fix later. zzz....
     ShoppingList list;
     List<Purchase> purchases;
     public void FIXMEHack(ShoppingList list, List<Purchase> purchases)

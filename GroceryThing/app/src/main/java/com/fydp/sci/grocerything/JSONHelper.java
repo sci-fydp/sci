@@ -93,7 +93,7 @@ public class JSONHelper {
         {
             registerObj.put(JKEY_LOGIN_EMAIL, email);
             registerObj.put(JKEY_LOGIN_PASS, password);
-            //TODO get UUID
+            //FIXME look at links, maybe dif idea? they say secure android id is best.
             //http://android-developers.blogspot.ca/2011/03/identifying-app-installations.html
             //http://stackoverflow.com/questions/5088474/how-can-i-get-the-uuid-of-my-android-phone-in-an-application
             registerObj.put(JKEY_LOGIN_UNIQUE_ID, Settings.Secure.ANDROID_ID);

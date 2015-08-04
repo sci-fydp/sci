@@ -1,30 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="40dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <CheckBox
-        android:layout_width="wrap_content"
+        android:layout_weight="0.1"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/shopping_list_row_checkBox"
         android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
         android:layout_marginLeft="1dp"/>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_weight="0.7"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
         android:id="@+id/shopping_list_row_text"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/shopping_list_row_checkBox"
         android:layout_marginLeft="10dp"
+        android:scrollHorizontally="true"
+        android:ellipsize="end"
+        android:maxLines="1"
         />
 
+    <Button
+        android:layout_weight="0.2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:id="@+id/shopping_list_row_delete_button"
+        android:layout_centerVertical="true" />
+
     <ImageView
-        android:layout_width="20dp"
+        android:layout_weight="0.1"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
 
         android:layout_marginTop="5dp"
@@ -33,15 +46,7 @@
         android:id="@+id/shopping_list_row_arrow"
         android:src = "@drawable/right_arrow"
         android:layout_centerVertical="true"
-        android:layout_alignParentRight = "true"/>
+        />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/shopping_list_row_delete_button"
-        android:layout_centerVertical="true"
-        android:layout_alignRight="@id/shopping_list_row_arrow"
-        android:layout_alignEnd="@id/shopping_list_row_arrow" />
-</RelativeLayout>
+
+</LinearLayout>

@@ -43,7 +43,7 @@ public class LoginActivity extends Activity implements AccLoginAsyncTask.AccLogi
                 Log.d("Main", "Hello Login attempt");
 
                 //debugging
-                //TODO remove.
+                //FIXME TODO remove.
                 if (usernameInput.getText().toString().length() == 0 && passwordInput.getText().toString().length() == 0)
                 {
                     //Call server and check for correctness.

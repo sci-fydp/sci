@@ -24,6 +24,14 @@
         android:layout_below="@id/userHome_newListButton"
         android:layout_centerHorizontal="true" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        android:id="@+id/userHome_settingsButton"
+        android:layout_below="@id/userHome_reloadListButton"
+        android:layout_centerHorizontal="true" />
+
     <!--
     <Button
         android:layout_width="wrap_content"
@@ -38,7 +46,7 @@
         android:layout_height="match_parent"
         android:id="@+id/userHome_savedList"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/userHome_reloadListButton">
+        android:layout_below="@id/userHome_settingsButton">
     </ListView>
 
 </RelativeLayout>

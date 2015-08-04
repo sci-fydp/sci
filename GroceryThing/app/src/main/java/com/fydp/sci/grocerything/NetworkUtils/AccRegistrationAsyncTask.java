@@ -20,7 +20,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
-//TODO inprogress.
 public class AccRegistrationAsyncTask extends AsyncTask<Void, Void, String> {
 
     AccRegistrationListener listener = null;

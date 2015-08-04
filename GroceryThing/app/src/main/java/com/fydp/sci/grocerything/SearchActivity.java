@@ -98,8 +98,11 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
         {
             theShoppingList = Model.getInstance().FIXMEList();
             purchases.addAll(Model.getInstance().FIXMEPurchase());
-			
-			
+        }
+        else
+        {
+            //hmm...... do i really need that number lol.
+            theShoppingList = new ShoppingList(shoppingListName, 3589083);
         }
 
         setTitle(shoppingListName);
@@ -156,7 +159,7 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
             public void afterTextChanged(Editable s) {
                 String str = s.toString();
                 searchTerrorTag++;
-                //FIXME lets test only on 3.
+                //FIXME lets test only on 3., uhhh this only updates & appears on 4, may be problem zzz.
                 if (str.trim().length() == 3)
                 {
                     NetworkUtils.getInstance().findGroceryNames(str, searchTerrorTag, SearchActivity.this);
@@ -295,10 +298,6 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
         progressDialog = ProgressDialog.show(SearchActivity.this, "Saving",
                 "Generic Saving Message", true);
 
-        //hmm...... do i really need that number lol.
-        theShoppingList = new ShoppingList(shoppingListName, 3589083);
-		
-		//TODO pass in additional purchase and edeleted.
         Model.getInstance().saveShoppingList(this, theShoppingList, isNew, purchases, additionalPurchases, deletedPurchases);
     }
 

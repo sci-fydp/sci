@@ -5,7 +5,6 @@ import com.fydp.sci.grocerything.JSONHelper;
 
 import org.json.JSONObject;
 
-//TODO inprogress.
 public class NewShoppingListAsyncTask extends AbstractShoppingListAsyncTask {
 
     private String listName = "GenericListName";
