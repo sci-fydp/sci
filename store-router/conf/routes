@@ -7,6 +7,8 @@ GET     /                           controllers.Search.index()
 
 GET     /search                     controllers.Search.search(s:String)
 
+GET     /eric                     	controllers.Eric.stuff()
+
 POST    /user/register                     	controllers.User.register()
 POST    /user/login                     	controllers.User.login()
 POST    /user/saveShoppingList              controllers.User.saveShoppingList()
