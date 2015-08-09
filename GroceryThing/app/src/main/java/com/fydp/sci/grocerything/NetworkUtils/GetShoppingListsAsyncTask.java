@@ -16,7 +16,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-//TODO inprogress.
 public class GetShoppingListsAsyncTask extends AbstractShoppingListAsyncTask {
 
     @Override

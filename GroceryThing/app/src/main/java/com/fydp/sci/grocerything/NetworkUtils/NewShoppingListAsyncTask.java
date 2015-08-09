@@ -5,7 +5,6 @@ import com.fydp.sci.grocerything.JSONHelper;
 
 import org.json.JSONObject;
 
-//TODO inprogress.
 public class NewShoppingListAsyncTask extends AbstractShoppingListAsyncTask {
 
     private String listName = "GenericListName";
@@ -31,6 +30,6 @@ public class NewShoppingListAsyncTask extends AbstractShoppingListAsyncTask {
 
     @Override
     protected String processFailure(String response) {
-        return "Error: SaveShoppingList";
+        return "Error: NewShoppingList";
     }
 }

@@ -16,7 +16,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-//TODO inprogress.
 public class AccLoginAsyncTask extends AsyncTask<Void, Void, String> {
 
     AccLoginListener listener = null;

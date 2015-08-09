@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class JSONHelper {
     public static final String JKEY_ITEM_NAME = "name";
@@ -92,7 +93,7 @@ public class JSONHelper {
         {
             registerObj.put(JKEY_LOGIN_EMAIL, email);
             registerObj.put(JKEY_LOGIN_PASS, password);
-            //TODO get UUID
+            //FIXME look at links, maybe dif idea? they say secure android id is best.
             //http://android-developers.blogspot.ca/2011/03/identifying-app-installations.html
             //http://stackoverflow.com/questions/5088474/how-can-i-get-the-uuid-of-my-android-phone-in-an-application
             registerObj.put(JKEY_LOGIN_UNIQUE_ID, Settings.Secure.ANDROID_ID);
@@ -173,7 +174,7 @@ public class JSONHelper {
     }
 
 
-    public static JSONObject generateSaveShoppingListItemJSON(ShoppingList shopList, Purchase purchase)
+    public static JSONObject generateSaveShoppingListItemJSON(ShoppingList shopList, List<Purchase> purchases)
     {
         JSONObject mainObj = new JSONObject();
         try
@@ -182,11 +183,16 @@ public class JSONHelper {
 
 
             obj.put("shopping_list_id", shopList.getId());
-            obj.put("item_id", purchase.getId());
-            obj.put("location_id", 5); //TODO FIXME ????????????????
-            obj.put("name", purchase.getName());
-            obj.put("description", purchase.getDescription());
-            obj.put("price", purchase.getPrice());
+
+
+            JSONArray jPurchaseArray = new JSONArray();
+
+            for (Purchase purchase : purchases)
+            {
+                jPurchaseArray.put(getPurchaseJSON(purchase));
+            }
+
+            obj.put("items", jPurchaseArray);
 
             mainObj.put(JKEY_SAVE_KEY, obj);
 
@@ -198,6 +204,54 @@ public class JSONHelper {
         return mainObj;
     }
 
+    public static JSONObject generateDeleteShoppingListItemJSON(ShoppingList shopList, List<Purchase> purchases)
+    {
+        JSONObject mainObj = new JSONObject();
+        try
+        {
+            JSONObject obj = getUserDataJSON();
+
+
+            obj.put("shopping_list_id", shopList.getId());
+
+
+            JSONArray jPurchaseArray = new JSONArray();
+
+            for (Purchase purchase : purchases)
+            {
+                jPurchaseArray.put(purchase.getId());
+            }
+
+            obj.put("item_ids", jPurchaseArray);
+
+            mainObj.put(JKEY_DELETE_KEY, obj);
+
+        }
+        catch(Exception e)
+        {
+
+        }
+        return mainObj;
+    }
+
+    private static JSONObject getPurchaseJSON(Purchase purchase)
+    {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("item_id", purchase.getId());
+            obj.put("location_id", purchase.getLocationId()); //TODO FIXME ????????????????
+            obj.put("name", purchase.getName());
+            obj.put("description", purchase.getDescription());
+            obj.put("price", purchase.getPrice());
+
+            return obj;
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private static JSONObject getUserDataJSON ()
     {
         JSONObject obj = new JSONObject();
@@ -205,7 +259,7 @@ public class JSONHelper {
         try
         {
             obj.put(JKEY_USER_ID, Model.getInstance().getUserId());
-            obj.put(JKEY_USER_SESSION, Model.getInstance().getSessionKey());
+            obj.put("session_str", Model.getInstance().getSessionKey());
             userObj.put(JKEY_USER_OBJ_KEY, obj);
         }
         catch(Exception e)
@@ -302,5 +356,34 @@ public class JSONHelper {
 
         }
         return obj;
+    }
+
+    public static List<Purchase> parseShoppingListPurchases(String response) {
+
+        try
+        {
+            List<Purchase> purchases = new ArrayList<Purchase>();
+            JSONArray jPurchaseArray =  new JSONArray(response);
+            for (int i = 0; i < jPurchaseArray.length(); i++)
+            {
+                JSONObject itemObj = jPurchaseArray.getJSONObject(i);
+                String name = itemObj.getString(JSONHelper.JKEY_ITEM_NAME);
+                int id = itemObj.getInt(JSONHelper.JKEY_ITEM_ID);
+                String desc = itemObj.getString("description");
+                //strs.add(name);
+                Grocery grocery = new Grocery(name, id, desc);
+                double price = itemObj.getDouble("price");
+                int locationId = 0;//itemObj.getInt("location"); //????? null????
+                Purchase purchase = new Purchase(grocery, price);
+                purchase.setLocationId(locationId);
+                purchases.add(purchase);
+            }
+            return purchases;
+        }
+        catch(Exception e)
+        {
+
+        }
+        return null;
     }
 }

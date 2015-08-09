@@ -35,11 +35,11 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class UserHomeActivity extends Activity implements Model.ModelGetShoppingListListener, Model.ModelDeleteShoppingListListener, Model.ModelGetShoppingListItemsListener {
+public class UserHomeActivity extends Activity implements Model.ModelGetShoppingListListener, Model.ModelDeleteShoppingListListener, Model.ModelGetShoppingListItemsListener, Model.NewShoppingListObserver {
     ListView historyListView;
     ArrayList<ShoppingList> shoppingLists;
     StableArrayAdapter historyListAdapter;
-    Button newListButton, reloadListButton;
+    Button newListButton, reloadListButton, settingsButton;
     ProgressDialog progressDialog;
     //Button viewListButton;
 
@@ -53,18 +53,20 @@ public class UserHomeActivity extends Activity implements Model.ModelGetShopping
 
     private void init()
     {
+
+        Model.getInstance().subscribeNewShoppingListObserver(this);
         reloadListButton = (Button)findViewById(R.id.userHome_reloadListButton);
         reloadListButton.setOnClickListener(new View.OnClickListener() {
 
-                                             @Override
-                                             public void onClick(View v) {
+                                                @Override
+                                                public void onClick(View v) {
 
-                                                 progressDialog = ProgressDialog.show(UserHomeActivity.this, "Fetching Data",
-                                                         "Generic Processing Message", true);
+                                                    progressDialog = ProgressDialog.show(UserHomeActivity.this, "Fetching Data",
+                                                            "Generic Processing Message", true);
 
-                                                 Model.getInstance().getUserShoppingLists(UserHomeActivity.this, false);
-                                             }
-                                         }
+                                                    Model.getInstance().getUserShoppingLists(UserHomeActivity.this, true);
+                                                }
+                                            }
 
         );
         newListButton = (Button)findViewById(R.id.userHome_newListButton);
@@ -83,9 +85,7 @@ public class UserHomeActivity extends Activity implements Model.ModelGetShopping
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        //TODO PASS groceries in.
                         Intent intent = SearchActivity.createIntent(UserHomeActivity.this, input.getText().toString());
-                        finish();
                         startActivity(intent);
                     }
                 });
@@ -101,6 +101,18 @@ public class UserHomeActivity extends Activity implements Model.ModelGetShopping
                 //Log.d("Main", "Hello Login attempt");
                 //Intent intent = new Intent(UserHomeActivity.this, SearchActivity.class);
                 //startActivity(intent);
+
+            }
+        });
+
+        settingsButton = (Button)findViewById(R.id.userHome_settingsButton);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                Intent intent = new Intent(UserHomeActivity.this, SettingsActivity.class);
+                startActivity(intent);
 
             }
         });
@@ -242,12 +254,11 @@ public class UserHomeActivity extends Activity implements Model.ModelGetShopping
         progressDialog.dismiss();
     }
 
+    //Getting theg purchases for te specific lsit.
     @Override
     public void success(ArrayList<Purchase> purchases, ShoppingList list) {
         progressDialog.dismiss();
-        //TODO PASS groceries in.
         Intent intent = SearchActivity.createIntent(UserHomeActivity.this, list, purchases);
-        finish();
         startActivity(intent);
     }
 
@@ -257,6 +268,31 @@ public class UserHomeActivity extends Activity implements Model.ModelGetShopping
         Toast.makeText(this, reason, Toast.LENGTH_LONG).show();
         //Error
 
+    }
+
+
+    //Listen to searchACtivity for new shopping lists.
+    @Override
+    public void shoppingListAdded(ShoppingList s)
+    {
+        shoppingLists.add(s);
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        if (historyListAdapter != null)
+            historyListAdapter.notifyDataSetChanged();
+    }
+
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+
+        Model.getInstance().unsubscribeNewShoppingListObserver(this);
     }
 
 }

@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -46,13 +47,15 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
 
     private static final String SHOPPING_LIST_NAME_KEY = "LISTNAMEKEY";
     private static final String NEW_SHOPPING_LIST_KEY = "NEWKEY";
-    private static final int SEARCH_DROP_DOWN_HEIGHT = 200;
+    private static final int SEARCH_DROP_DOWN_HEIGHT = 300;
     int searchTerrorTag = 0; // this is terror.
     HashSet<Grocery> savedGroceries = new HashSet<Grocery>();//Real terror.
     private String shoppingListName;
     private boolean isNew;
     private ProgressDialog progressDialog;
-
+	ArrayList<Purchase> additionalPurchases = new ArrayList<Purchase>();
+	ArrayList<Purchase> deletedPurchases = new ArrayList<Purchase>();
+			
     //TODO STICK EXISTING GROCERIES IN?.... OR VIA MODEL..... hmm.....
     public static Intent createIntent(Context context, String name)
     {
@@ -96,6 +99,11 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
             theShoppingList = Model.getInstance().FIXMEList();
             purchases.addAll(Model.getInstance().FIXMEPurchase());
         }
+        else
+        {
+            //hmm...... do i really need that number lol.
+            theShoppingList = new ShoppingList(shoppingListName, 3589083);
+        }
 
         setTitle(shoppingListName);
         init();
@@ -118,7 +126,14 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long rowId) {
                 Grocery selection = (Grocery) parent.getItemAtPosition(position);
-                purchases.add(new Purchase(selection));
+				Purchase purchase = new Purchase(selection);
+                purchases.add(purchase);
+				
+				if (!isNew)
+				{
+					additionalPurchases.add(purchase);
+				}
+				
                 groceryListAdapter.notifyDataSetChanged();
                 Log.d("SEARCHACITITY", "SELECTED! " + selection);
                 searchTextView.setText("");
@@ -144,7 +159,7 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
             public void afterTextChanged(Editable s) {
                 String str = s.toString();
                 searchTerrorTag++;
-                //FIXME lets test only on 3.
+                //FIXME lets test only on 3., uhhh this only updates & appears on 4, may be problem zzz.
                 if (str.trim().length() == 3)
                 {
                     NetworkUtils.getInstance().findGroceryNames(str, searchTerrorTag, SearchActivity.this);
@@ -173,7 +188,7 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
         public View getView(int position, View convertView, ViewGroup parent) {
 
             // View rowView = convertView;
-            final ShoppingListViewHolder viewHolder;
+            final ShoppingListItemViewHolder viewHolder;
 
             if (convertView == null) {
 
@@ -183,27 +198,35 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
 
                 convertView  = inflater.inflate(R.layout.shopping_list_row, parent, false);
 
-                viewHolder = new ShoppingListViewHolder();
+                viewHolder = new ShoppingListItemViewHolder();
 
                 viewHolder.checkboxImage=(CheckBox)convertView.findViewById(R.id.shopping_list_row_checkBox);
                 viewHolder.nameText=(TextView)convertView.findViewById(R.id.shopping_list_row_text);
                 viewHolder.nextImage=(ImageView)convertView.findViewById(R.id.shopping_list_row_arrow);
-
-             /*
-                viewHolder.downloadImageButton.setOnClickListener(new OnClickListener() {
+				
+				final int purchasePosition = position;
+				
+				viewHolder.deleteButton =(Button)convertView.findViewById(R.id.shopping_list_row_delete_button);
+				viewHolder.deleteButton.setOnClickListener(new View.OnClickListener()
+				{
                     @Override
-                    public void onClick(View v) {
-                        System.out.println("DOWNLOAD PRESSED");
+					public void onClick(View v)
+					{
+                        Purchase purchase = purchases.get(purchasePosition);
+						//.... some are you sure dialog.
+						
+						//add to deleted purchases if not new
+						if (!isNew)
+						{
+							deletedPurchases.add(purchase);
+						}
 
-                        viewHolder.downloadImageButton = (ImageView)v.findViewById(R.id.downloadImageButton);
-                        viewHolder.downloadImageButton.setImageResource(R.drawable.icon_ok);
-                        viewHolder.downloadImageButton.setTag("downloaded");
-                        //rowView.setTag("downloaded");
 
+                        purchases.remove(purchasePosition);
+                        groceryListAdapter.notifyDataSetChanged();
+					}
+				});
 
-                    }
-                });
-*/
 
 
                 convertView.setTag(viewHolder);
@@ -211,23 +234,24 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
             }
 
             else{
-                viewHolder= (ShoppingListViewHolder)convertView.getTag();
+                viewHolder= (ShoppingListItemViewHolder)convertView.getTag();
             }
 
             viewHolder.nameText.setText(purchases.get(position).getName());
 
             return convertView;
 
-        } //close getView public View getView(int position, View convertView, ViewGroup parent) {
+        } 
 
 
     }
 
-    static class ShoppingListViewHolder
+    static class ShoppingListItemViewHolder
     {
         public TextView nameText;
         public ImageView nextImage;
         public CheckBox checkboxImage;
+		public Button deleteButton;
     }
 
 
@@ -274,9 +298,7 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
         progressDialog = ProgressDialog.show(SearchActivity.this, "Saving",
                 "Generic Saving Message", true);
 
-        //hmm...... do i really need that number lol.
-        theShoppingList = new ShoppingList(shoppingListName, 3589083);
-        Model.getInstance().saveShoppingList(this, theShoppingList, isNew, purchases);
+        Model.getInstance().saveShoppingList(this, theShoppingList, isNew, purchases, additionalPurchases, deletedPurchases);
     }
 
     //Model Response

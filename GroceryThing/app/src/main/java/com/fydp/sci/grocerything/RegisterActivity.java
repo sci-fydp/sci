@@ -63,7 +63,6 @@ public class RegisterActivity extends Activity implements AccRegistrationAsyncTa
     {
         progressDialog.dismiss();
         Toast.makeText(this, "Success " + msg, Toast.LENGTH_LONG).show();
-        //TODO register to model. ? or not
         finish();
         Intent intent = new Intent(RegisterActivity.this, UserHomeActivity.class);
         startActivity(intent);

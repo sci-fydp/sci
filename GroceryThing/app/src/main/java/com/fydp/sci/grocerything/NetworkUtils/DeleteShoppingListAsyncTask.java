@@ -5,7 +5,6 @@ import com.fydp.sci.grocerything.JSONHelper;
 
 import org.json.JSONObject;
 
-//TODO inprogress.
 public class DeleteShoppingListAsyncTask extends AbstractShoppingListAsyncTask {
 
     private ShoppingList shopList;
@@ -25,9 +24,7 @@ public class DeleteShoppingListAsyncTask extends AbstractShoppingListAsyncTask {
 
     @Override
     protected Object processResponse(String response) {
-        //Parse result
-        //TODO
-        return null;
+        return response;
     }
 
     @Override
