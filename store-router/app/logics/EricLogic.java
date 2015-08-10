@@ -127,4 +127,49 @@ public class EricLogic {
 		return occurrences;
 	} // end organize_occurences
 
+
+	/*
+	  	Compute the probability of an item being purchased, based on how long has it been since it was last bought
+	  	and the intervals between purchases of that item so far. The calculation algorithm is as follows:
+
+		For every interval in ascending order, add to the probability (# of that interval in array) / (size of array).
+		ex) intervals = [2,2,4,4,6]
+			p(0) = 0
+			p(1) = 0
+			p(2) = 0 + 2/5 = .4
+			p(3) = .4
+			p(4) = .4 + 2/5 = .8
+			p(5) = .8
+			p(6) = .8 + 1/5 = 1.0
+
+		(Only calculates up to the date of the second parameter and return that value)
+
+		TODO: improve this (Taylor series? Metaheuristics?)
+			also need to incorporate recency here... but how?
+
+	 	Inputs:
+	  		ArrayList<Integer> intervals : list of intervals between dates of purchase
+	  		int date_since_last_purchase
+
+		Output:
+	  		double Probability
+
+	 */
+	public static double calculate_purchase_probability(ArrayList<Integer> intervals, int date_since_last_purchase) {
+		double prob = 0;
+		Collections.sort(intervals);
+
+		int num_elements = intervals.size();
+		int count = 0;
+
+		for (int i = 0; i < num_elements; i++) {
+			if (intervals.get(i) <= date_since_last_purchase) count++;
+		}
+
+		// This thing can obviously be done much more easily via binarysearch (and O(log n) instead of O(n) too!)
+		// but using this temporarily since we're (hopefully?) gonna improve anyway.
+
+		return count / num_elements;
+	}
+
 }
