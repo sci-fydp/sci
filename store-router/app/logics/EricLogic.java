@@ -16,14 +16,13 @@ public class EricLogic {
 
 
 	 	Inputs:
-	  		HashMap<String, TreeSet<Integer>> occurrences	: map of item by their dates of purchase
 	  		int generation_date : date of generating the list (may not necessarily be today)
 
 		Output:
-	  		List of item names
+	  		List<UserShoppingListItem> List of item names
 
 	 */
-	public static List<UserShoppingListItem> generateItemsForUser() {
+	public static List<UserShoppingListItem> generateItemsForUser(int generation_date) {
 		models.User user = models.User.find.where().eq("id", 1).findUnique();
 		HashMap<String, TreeSet<Date>> occurrences = organize_occurrences(user);
 		List<UserShoppingListItem> final_list = null;
