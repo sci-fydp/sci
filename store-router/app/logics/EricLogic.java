@@ -22,6 +22,10 @@ public class EricLogic {
 	  		List<UserShoppingListItem> List of item names
 
 	 */
+
+ 	private static final double FREQUENT_ITEM_PROBABILITY = 0.5;
+ 	private static final double NUM_MAX_INTERVAL_TOLERATED = 5;
+
 	public static List<UserShoppingListItem> generateItemsForUser(int generation_date) {
 		models.User user = models.User.find.where().eq("id", 1).findUnique();
 		HashMap<String, TreeSet<Date>> occurrences = organize_occurrences(user);
@@ -57,16 +61,20 @@ public class EricLogic {
 				// no need to go through sorting if this passes, so saves some computations
 				int maxInterval = Collections.max(intervals);
 				int minInterval = Collections.min(intervals);
+				double prob = 0;
 				if (date_since_last_purchase >= maxInterval) {
-					final_list.add(name);
+					// always put in list if the date since last purchase is within [maxInterval, 2*maxInterval]
+					// the probability linear decays afterwards, guessing that the user is no longer interested
+					prob = 1; // TODO: implement this
+
 
 				} else if (date_since_last_purchase < minInterval) {
 					// TODO: for now never include in list but with a small possibility still should.
 					// 		where to get that probability though?
 				} else {
-					double prob = calculate_purchase_probability(intervals, date_since_last_purchase);
-					if (Math.random() > prob) final_list.add(name);
+					prob = calculate_purchase_probability(intervals, date_since_last_purchase);
 				}
+				if (Math.random() > prob) final_list.add(name);
 			} // end if dates.size()
 		} // end while
 
