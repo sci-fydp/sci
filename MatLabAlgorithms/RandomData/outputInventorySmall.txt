@@ -1,0 +1,10 @@
+Store_0 Duck 536
+Store_1 Chicken 359
+Store_2 Chicken 323 Duck 488 Apples 40 Pork 347
+Store_3 Chicken 325 SomethingElse 1006
+Store_4 Duck 481
+Store_5 VeryExpensiveItem 853
+Store_6 MediumItem 454 Utensils 106
+Store_7 Pork 350 Grapes 19 Apples 49
+Store_8 Utensils 97 Chicken 323
+Store_9 Wings 286 Duck 427 Oranges 79 Pork 312

@@ -1,0 +1,100 @@
+Store_0 MediumItem 34 Oranges 6 SomethingElse 86 
+Store_1 Apples 5 SomethingElse 105 VeryExpensiveItem 81 
+Store_2 Apples 4 Oranges 7 
+Store_3 VeryExpensiveItem 116 Oranges 7 
+Store_4 SomethingElse 76 ExpensiveItem 82 
+Store_5 ExpensiveItem 93 VeryExpensiveItem 117 
+Store_6 VeryExpensiveItem 111 SomethingElse 104 
+Store_7 VeryExpensiveItem 116 SomethingElse 79 
+Store_8 SomethingElse 93 MediumItem 45 
+Store_9 ExpensiveItem 82 SomethingElse 107 
+Store_10 Oranges 6 Apples 5 ExpensiveItem 67 
+Store_11 MediumItem 44 Apples 4 SomethingElse 87 
+Store_12 Oranges 6 
+Store_13 Oranges 6 MediumItem 45 Apples 4 VeryExpensiveItem 99 
+Store_14 Oranges 6 
+Store_15 MediumItem 37 VeryExpensiveItem 96 
+Store_16 VeryExpensiveItem 103 MediumItem 36 
+Store_17 SomethingElse 109 ExpensiveItem 91 
+Store_18 Oranges 7 SomethingElse 105 
+Store_19 ExpensiveItem 87 Apples 4 
+Store_20 VeryExpensiveItem 117 Oranges 7 
+Store_21 Oranges 7 VeryExpensiveItem 108 
+Store_22 Oranges 6 
+Store_23 MediumItem 37 VeryExpensiveItem 118 
+Store_24 Oranges 6 SomethingElse 111 
+Store_25 Oranges 7 VeryExpensiveItem 83 
+Store_26 SomethingElse 95 MediumItem 34 
+Store_27 Apples 4 Oranges 7 
+Store_28 VeryExpensiveItem 114 ExpensiveItem 72 
+Store_29 MediumItem 46 VeryExpensiveItem 95 
+Store_30 SomethingElse 78 Oranges 6 
+Store_31 ExpensiveItem 86 Apples 4 Oranges 7 
+Store_32 VeryExpensiveItem 113 ExpensiveItem 95 
+Store_33 Oranges 6 Apples 4 MediumItem 35 ExpensiveItem 79 
+Store_34 Apples 5 VeryExpensiveItem 110 
+Store_35 SomethingElse 102 MediumItem 48 
+Store_36 SomethingElse 106 MediumItem 37 
+Store_37 SomethingElse 94 VeryExpensiveItem 95 
+Store_38 ExpensiveItem 76 VeryExpensiveItem 100 
+Store_39 SomethingElse 94 VeryExpensiveItem 88 
+Store_40 ExpensiveItem 72 Oranges 7 MediumItem 46 
+Store_41 Apples 4 SomethingElse 76 
+Store_42 Oranges 7 VeryExpensiveItem 118 
+Store_43 VeryExpensiveItem 104 MediumItem 41 
+Store_44 Apples 5 VeryExpensiveItem 113 
+Store_45 SomethingElse 110 MediumItem 42 
+Store_46 Apples 4 ExpensiveItem 70 MediumItem 40 
+Store_47 MediumItem 44 
+Store_48 Apples 5 VeryExpensiveItem 104 
+Store_49 VeryExpensiveItem 84 Oranges 6 
+Store_50 VeryExpensiveItem 101 Apples 5 
+Store_51 Apples 4 ExpensiveItem 70 VeryExpensiveItem 111 
+Store_52 SomethingElse 93 ExpensiveItem 85 
+Store_53 MediumItem 42 ExpensiveItem 66 
+Store_54 ExpensiveItem 95 VeryExpensiveItem 97 
+Store_55 SomethingElse 86 VeryExpensiveItem 105 
+Store_56 SomethingElse 102 VeryExpensiveItem 84 
+Store_57 SomethingElse 76 MediumItem 36 
+Store_58 MediumItem 35 SomethingElse 111 
+Store_59 VeryExpensiveItem 80 SomethingElse 109 
+Store_60 Oranges 7 SomethingElse 90 
+Store_61 ExpensiveItem 84 Apples 5 VeryExpensiveItem 84 
+Store_62 MediumItem 46 ExpensiveItem 89 
+Store_63 Oranges 6 ExpensiveItem 66 MediumItem 42 
+Store_64 Apples 5 VeryExpensiveItem 104 
+Store_65 ExpensiveItem 69 Oranges 6 Apples 5 MediumItem 45 
+Store_66 VeryExpensiveItem 101 MediumItem 39 
+Store_67 Apples 4 Oranges 7 SomethingElse 96 
+Store_68 MediumItem 37 
+Store_69 Oranges 6 SomethingElse 98 
+Store_70 Oranges 7 ExpensiveItem 80 MediumItem 37 
+Store_71 ExpensiveItem 67 Apples 5 VeryExpensiveItem 111 
+Store_72 ExpensiveItem 69 
+Store_73 ExpensiveItem 88 Oranges 7 
+Store_74 VeryExpensiveItem 82 SomethingElse 86 
+Store_75 ExpensiveItem 89 Apples 4 SomethingElse 83 
+Store_76 ExpensiveItem 82 VeryExpensiveItem 106 
+Store_77 MediumItem 36 Oranges 7 
+Store_78 Apples 4 SomethingElse 81 ExpensiveItem 71 
+Store_79 Oranges 6 MediumItem 39 
+Store_80 ExpensiveItem 64 
+Store_81 ExpensiveItem 66 SomethingElse 89 
+Store_82 Apples 5 Oranges 6 SomethingElse 81 
+Store_83 ExpensiveItem 74 Apples 4 MediumItem 47 
+Store_84 MediumItem 38 Apples 5 
+Store_85 ExpensiveItem 90 SomethingElse 103 
+Store_86 SomethingElse 81 Apples 4 MediumItem 47 
+Store_87 Apples 4 MediumItem 39 VeryExpensiveItem 86 
+Store_88 VeryExpensiveItem 115 Apples 5 
+Store_89 Oranges 6 ExpensiveItem 79 VeryExpensiveItem 112 
+Store_90 ExpensiveItem 80 
+Store_91 MediumItem 45 ExpensiveItem 93 
+Store_92 Oranges 7 
+Store_93 Oranges 6 MediumItem 45 VeryExpensiveItem 81 
+Store_94 Oranges 6 MediumItem 40 SomethingElse 94 
+Store_95 Oranges 6 ExpensiveItem 78 
+Store_96 Oranges 7 
+Store_97 VeryExpensiveItem 111 Oranges 6 
+Store_98 MediumItem 49 
+Store_99 Apples 4 MediumItem 49 SomethingElse 107 

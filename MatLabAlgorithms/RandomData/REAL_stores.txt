@@ -1,0 +1,18 @@
+store_zehrs_1: Conestoga Mall, 555 Davenport Rd, Waterloo, ON, N2L
+store_zehrs_2: 315 Lincoln Rd, Waterloo, ON N2J 4H7
+store_zehrs_3: 450 Erb St W Waterloo, ON N2T 1H4
+store_giant_tiger_1: 351 Margaret Ave, Kitchener, ON N2H 4J6
+store_super_store_1: 875 Highland Rd W, Kitchener, ON N2N 2Y2
+store_sobeys_1: Bridgeport Plaza, 94 Bridgeport Rd E, Waterloo, ON N2J 2J4
+store_sobeys_2: 450 Columbia St W, Waterloo, ON N2T 2W1
+store_sobeys_3: Northfield Centre Business Bldg, 585 Weber St N, Waterloo, ON N2V 1V8
+store_sobeys_4: 74 Highland Rd W, Kitchener, ON N2M 3C5
+store_wholesale_club_1: 24 Forwell Creek Rd, Waterloo, ON N2J 3Z3
+store_valu_mart_1: Waterloo Public Square, 75 King St N, Waterloo, ON N2L 2X9
+store_freshco_1: 425 University Ave E, Waterloo, ON N2K 4C9
+store_freshco_2: 1111 Weber St E, Kitchener, ON N2A 2Y2
+store_food_basics_1: 600 Laurelwood Dr, Waterloo, ON N2V 2S6
+store_food_basics_2: 851 Fischer Hallman Rd, Kitchener, ON N2M 5N8
+location_university_of_waterloo_1: 200 University Ave W, Waterloo, ON N2L 3G1
+location_rim_park_1: 2001 University Ave E, Waterloo, ON N2K 4K4
+location_grand_river_hospital_1: 835 King Street West, Kitchener, ON N2G 1G3

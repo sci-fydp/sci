@@ -1,0 +1,14 @@
+ExpensiveItem			800
+VeryExpensiveItem		1000
+Apples					50
+Oranges					70
+MediumItem				420
+SomethingElse			940
+Grapes 					20
+Utensils				100
+Stationery				150
+Wings					250
+Chicken					300
+Pork					350
+Beef					400
+Duck					500
