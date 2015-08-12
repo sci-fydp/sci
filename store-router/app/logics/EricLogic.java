@@ -1,9 +1,17 @@
 package logics;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import models.UserShoppingList;
 import models.UserShoppingListItem;
+
+import org.joda.time.DateTime;
 
 public class EricLogic {
 
@@ -26,18 +34,18 @@ public class EricLogic {
  	private static final double FREQUENT_ITEM_PROBABILITY = 0.5;
  	private static final double NUM_MAX_INTERVAL_TOLERATED = 5;
 
-	public static List<UserShoppingListItem> generateItemsForUser(int generation_date) {
+	public static List<UserShoppingListItem> generateItemsForUser() {
+		long generation_timestamp = DateTime.now().getMillis();
+		
 		models.User user = models.User.find.where().eq("id", 1).findUnique();
-		HashMap<String, TreeSet<Date>> occurrences = organize_occurrences(user);
+		HashMap<UserShoppingListItem, TreeSet<DateTime>> occurrences = organize_occurrences(user);
 		List<UserShoppingListItem> final_list = null;
 
 		Set<UserShoppingListItem> items = occurrences.keySet();
 		Iterator<UserShoppingListItem> items_it = items.iterator();
 
-		// Loop for each item:
-		while (items_it.hasNext()) {
-			UserShoppingListItem name = items_it.next();
-			TreeSet<Date> dates = occurrences.get(name);
+		for(UserShoppingListItem item : items) {
+			TreeSet<DateTime> dates = occurrences.get(item);
 			
 			if (dates.size() == 0) {
 				// TODO: error
@@ -45,22 +53,23 @@ public class EricLogic {
 				// TODO: for now an item bought for the first time will never appear on a newly generated list
 				// 		Later this should be fixed to incorporate item relativity values.
 			} else {
-				ArrayList<Date> intervals = new ArrayList<Date>();	// no need for this to be sorted
-				Iterator<Date> dates_it = dates.iterator();
+				List<Long> intervals = new ArrayList<Long>();	// no need for this to be sorted
+
+				Iterator<DateTime> dates_it = dates.iterator();
 				// iterate through the dates and calculate intervals between consecutive elements
-				int cur = dates_it.next();
+				DateTime cur = dates_it.next();
 				while (dates_it.hasNext()) {
-					int next = dates_it.next();
-					intervals.add(next - cur);
+					DateTime next = dates_it.next();
+					intervals.add(next.getMillis() - cur.getMillis());
 					cur = next;
 				}
 
-				int date_since_last_purchase = generation_date - dates.last();
+				long date_since_last_purchase = generation_timestamp - dates.last().getMillis();
 
 				// ALWAYS put the item in list if it has been more than the max interval date since last purchase.
 				// no need to go through sorting if this passes, so saves some computations
-				int maxInterval = Collections.max(intervals);
-				int minInterval = Collections.min(intervals);
+				long maxInterval = Collections.max(intervals);
+				long minInterval = Collections.min(intervals);
 				double prob = 0;
 				if (date_since_last_purchase >= maxInterval) {
 					// always put in list if the date since last purchase is within [maxInterval, 2*maxInterval]
@@ -74,9 +83,9 @@ public class EricLogic {
 				} else {
 					prob = calculate_purchase_probability(intervals, date_since_last_purchase);
 				}
-				if (Math.random() > prob) final_list.add(name);
+				if (Math.random() > prob) final_list.add(item);
 			} // end if dates.size()
-		} // end while
+		}
 
 		return final_list;
 	}
@@ -91,32 +100,32 @@ public class EricLogic {
 		Output:
 			<UserShoppingListItem -> list of Date> mapping
 	*/
-	public static HashMap<String, TreeSet<Date>> organize_occurrences(models.User user) {
+	public static HashMap<UserShoppingListItem, TreeSet<DateTime>> organize_occurrences(models.User user) {
 		/*
 			Q) Why use TreeSet (instead of, say, ArrayList) to keep track of item occurrence dates?
 				- ordered insert; convenient later in calculating intervals between purchase dates.
 				- prevents duplicate elements, in case the user accidentally input an item more than once on list.
 				TODO: doesn't prevent duplicate elements (try printing a treeset directly to reproduce); investigate this
 		 */
-		HashMap<UserShoppingListItem, TreeSet<Date>> occurrences = new HashMap<UserShoppingListItem, TreeSet<Date>>();
+		HashMap<UserShoppingListItem, TreeSet<DateTime>> occurrences = new HashMap<UserShoppingListItem, TreeSet<DateTime>>();
 		List<UserShoppingList> shoppingLists = UserShoppingList.find.where().eq("user_id", user.id).findList();
 
 		for(UserShoppingList shoppingList : shoppingLists) {
-			Date date = shoppingList.createdAt(); // TODO: is this correct?
+			DateTime date = shoppingList.creationDate; // TODO: is this correct?
 			List<UserShoppingListItem> shoppingListItems = UserShoppingListItem.find.where().eq("shopping_list_id", shoppingList.id).findList();
 			
-			for (int itr_items = 0; itr_items < list.size(); itr_items++) {
-				UserShoppingListItem item = list.get(itr_items);
-
-				TreeSet<Date> dates = new TreeSet<Date>();
+			for(UserShoppingListItem item : shoppingListItems) {
+				TreeSet<DateTime> dates = null;
 				if (occurrences.containsKey(item)) {
 					// item already exists in hashmap; add the date of occurence to list of dates
 					dates = occurrences.get(item);
 				}
+				else {
+					 dates = new TreeSet<DateTime>();
+				}
 				dates.add(date);
 				occurrences.put(item, dates);
 			}
-			
 		}
 	
 		// Print the contents of the hashmap by key (TODO: need to fix first if using)
@@ -163,12 +172,12 @@ public class EricLogic {
 	  		double Probability
 
 	 */
-	public static double calculate_purchase_probability(ArrayList<Integer> intervals, int date_since_last_purchase) {
+	public static double calculate_purchase_probability(List<Long> intervals, long date_since_last_purchase) {
 		double prob = 0;
 		Collections.sort(intervals);
 
 		int num_elements = intervals.size();
-		int count = 0;
+		double count = 0;
 
 		for (int i = 0; i < num_elements; i++) {
 			if (intervals.get(i) <= date_since_last_purchase) count++;

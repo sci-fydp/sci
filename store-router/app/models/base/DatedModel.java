@@ -1,11 +1,11 @@
 package models.base;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+
+import org.joda.time.DateTime;
 
 import play.data.format.Formats;
 import play.db.ebean.Model;
@@ -17,11 +17,11 @@ public abstract class DatedModel extends Model {
 
 	@Formats.DateTime(pattern="yyyy-MM-dd HH:mm:ss")
 	@Column(name = "creation_date")
-	public Date creationDate;
+	public DateTime creationDate;
 	
 	@Formats.DateTime(pattern="yyyy-MM-dd HH:mm:ss")
 	@Column(name = "modify_date")
-	public Date modifyDate;
+	public DateTime modifyDate;
 	
 	@Override
     public void save() {
@@ -37,11 +37,11 @@ public abstract class DatedModel extends Model {
     
     @PrePersist
     void createdAt() {
-    	creationDate = modifyDate = new Date();
+    	creationDate = modifyDate = new DateTime();
     }
    
     @PreUpdate
     void updatedAt() {
-    	modifyDate = new Date();
+    	modifyDate = new DateTime();
     }
 }
