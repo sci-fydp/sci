@@ -13,7 +13,7 @@ import models.UserShoppingListItem;
 
 import org.joda.time.DateTime;
 
-public class EricLogic {
+public class TrendAnalysisLogic {
 
 	/*
 	  	Generate the probable shopping list for the specified date.
