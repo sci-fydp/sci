@@ -4,6 +4,7 @@ package com.fydp.sci.grocerything;
 import android.provider.Settings;
 
 import com.fydp.sci.grocerything.DataModel.Grocery;
+import com.fydp.sci.grocerything.DataModel.GroceryConstants;
 import com.fydp.sci.grocerything.DataModel.Model;
 import com.fydp.sci.grocerything.DataModel.Purchase;
 import com.fydp.sci.grocerything.DataModel.ShoppingList;
@@ -238,7 +239,8 @@ public class JSONHelper {
     {
         try {
             JSONObject obj = new JSONObject();
-            obj.put("item_id", purchase.getId());
+            if (purchase.getId() != GroceryConstants.ERROR_ID_NUMBER)
+                obj.put("item_id", purchase.getId());
             obj.put("location_id", purchase.getLocationId()); //TODO FIXME ????????????????
             obj.put("name", purchase.getName());
             obj.put("description", purchase.getDescription());

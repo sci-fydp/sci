@@ -44,6 +44,7 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
     AutoCompleteTextView searchTextView;
     RelativeLayout mainLayout;
     ArrayAdapter<Grocery> groceryNameAdapter;
+    Button newItemButton;
 
     private static final String SHOPPING_LIST_NAME_KEY = "LISTNAMEKEY";
     private static final String NEW_SHOPPING_LIST_KEY = "NEWKEY";
@@ -53,6 +54,7 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
     private String shoppingListName;
     private boolean isNew;
     private ProgressDialog progressDialog;
+
 	ArrayList<Purchase> additionalPurchases = new ArrayList<Purchase>();
 	ArrayList<Purchase> deletedPurchases = new ArrayList<Purchase>();
 			
@@ -118,6 +120,16 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
         groceryNameAdapter = new ArrayAdapter<Grocery>(this,
                 android.R.layout.simple_dropdown_item_1line, new ArrayList<Grocery>());
 
+        newItemButton = (Button)findViewById(R.id.search_newItemButton);
+        newItemButton.setEnabled(false);
+        newItemButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Grocery grocery = new Grocery();
+                grocery.setName(searchTextView.getText().toString());
+                searchTextView.setText("");
+            }
+        });
 
         searchTextView.setAdapter(groceryNameAdapter);
         searchTextView.setDropDownHeight(SEARCH_DROP_DOWN_HEIGHT);
@@ -157,6 +169,7 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
 
             @Override
             public void afterTextChanged(Editable s) {
+                newItemButton.setEnabled(s.toString().length() > 0);
                 String str = s.toString();
                 searchTerrorTag++;
                 //FIXME lets test only on 3., uhhh this only updates & appears on 4, may be problem zzz.
