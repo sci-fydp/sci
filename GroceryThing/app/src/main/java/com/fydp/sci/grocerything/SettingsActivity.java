@@ -25,6 +25,7 @@ public class SettingsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+		init();
     }
 	
 	private void init()
@@ -66,7 +67,8 @@ public class SettingsActivity extends Activity {
 				        switch (which){
 				        case DialogInterface.BUTTON_POSITIVE:
 				            //Yes button clicked
-
+							progressDialog = ProgressDialog.show(SettingsActivity.this, "Updating...",
+									"Updating...", true);
 				        	//DELETE ALL LISTS.
 					        Model.getInstance().deleteAllShoppingLists(new Model.ModelGenericListener(){
 							 	@Override

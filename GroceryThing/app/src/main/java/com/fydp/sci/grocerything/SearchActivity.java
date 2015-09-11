@@ -127,7 +127,17 @@ public class SearchActivity extends Activity implements SearchItemsAsyncTask.Sea
             public void onClick(View v) {
                 Grocery grocery = new Grocery();
                 grocery.setName(searchTextView.getText().toString());
+                Purchase purchase = new Purchase(grocery);
+                purchases.add(purchase);
+
+                if (!isNew)
+                {
+                    additionalPurchases.add(purchase);
+                }
+
+                groceryListAdapter.notifyDataSetChanged();
                 searchTextView.setText("");
+                mainLayout.requestFocus();
             }
         });
 
