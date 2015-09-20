@@ -18,6 +18,18 @@ import java.util.List;
 public class Model {
 
 
+    private interface IChainSave
+    {
+        void success();
+        void failure(String s);
+    }
+
+    public interface ModelGenericListener
+    {
+        void success(String str);
+        void failure(String reason);
+    }
+
     public interface ModelGetShoppingListItemsListener
     {
         void success(ArrayList<Purchase> purchases, ShoppingList list);
@@ -179,12 +191,6 @@ public class Model {
         }
     }
 
-    private interface IChainSave
-    {
-        void success();
-        void failure(String s);
-    }
-
     public void deleteShoppingList(final ModelDeleteShoppingListListener listener, ShoppingList shopList)
     {
 
@@ -295,6 +301,34 @@ public class Model {
         });
 
         task.execute();
+    }
+
+    public void updateUserPushNotificationSettings(boolean accept,final ModelGenericListener listener) {
+
+    }
+
+    public void deleteAllShoppingLists(final ModelGenericListener listener) {
+
+        /*
+        GetShoppingListItemsAsyncTask task = new GetShoppingListItemsAsyncTask();
+        task.setParams(list);
+
+        task.addListener(new AbstractShoppingListAsyncTask.ShoppingListTaskListener() {
+
+            @Override
+            public void success(AbstractShoppingListAsyncTask task, Object obj) {
+                ArrayList<Purchase> purchases = (ArrayList<Purchase>) obj;
+                listener.success(purchases, list);
+
+            }
+
+            @Override
+            public void failure(AbstractShoppingListAsyncTask task, String reason) {
+                listener.failure(reason);
+            }
+        });
+
+        task.execute();*/
     }
 
 

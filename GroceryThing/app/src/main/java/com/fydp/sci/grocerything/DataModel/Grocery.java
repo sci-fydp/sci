@@ -7,6 +7,12 @@ public class Grocery {
     private int id;
     private String desc;
 
+    public Grocery()
+    {
+        id = GroceryConstants.ERROR_ID_NUMBER;
+        name = "I AM ERROR";
+        desc = "";
+    }
     public Grocery(Grocery g)
     {
         this.name = g.name;

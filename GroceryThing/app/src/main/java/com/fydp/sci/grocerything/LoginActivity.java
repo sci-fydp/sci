@@ -52,8 +52,8 @@ public class LoginActivity extends Activity implements AccLoginAsyncTask.AccLogi
                 }
                 else
                 {
-                    progressDialog = ProgressDialog.show(LoginActivity.this, "Generic Processing Title",
-                            "Generic Processing Message", true);
+                    progressDialog = ProgressDialog.show(LoginActivity.this, "Logging in...",
+                            "Wait a second...", true);
                     NetworkUtils.getInstance().login(usernameInput.getText().toString(), passwordInput.getText().toString(), LoginActivity.this);
                 }
 
